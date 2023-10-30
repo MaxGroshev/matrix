@@ -3,10 +3,13 @@
 //-----------------------------------------------------------------------------------------
 
 #include <vector>
+#include "graphviz.h"
+#include "debug_utils.hpp"
+#include "avl_tree.hpp"
 
 //-----------------------------------------------------------------------------------------
 
-namespace rb_tree_ui {
+namespace avl_tree_ui {
 
 
 // size_t        get_count_of_input_triangles(std::istream & in_strm = std::cin);

@@ -1,0 +1,7 @@
+digraph   
+{
+rankdir = ""
+splines = "true"
+
+node1 [shape      = "Mrecord", width = 1.1, height = 1.21,  fillcolor   = "#eed8cd", style = "filled", fontcolor= " #31032A", fontname = "Calibri", color = "white", label = "{1}"]
+}

@@ -17,13 +17,17 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("Debug_version")
 endif ()
 
+# add_compile_options(-fsanitize=address -fsanitize=undefined)
+
 #-----------------------------------------------------------------------------------------
 
-add_subdirectory(src/)
+add_subdirectory(graph_lib/)
+add_subdirectory(debug_utils/) #make compile only in debug mode
+add_subdirectory(avl_tree/)
 
-if (TESTING_ENABLED)
-    add_subdirectory(./tests/)
-endif()
+# if (TESTING_ENABLED)
+#     add_subdirectory(./tests/)
+# endif()
 
 unset(TESTING_ENABLED CACHE)
 

@@ -2,30 +2,21 @@ cmake_minimum_required(VERSION 3.21)
 
 #-----------------------------------------------------------------------------------------
 
-project(triangles)
+project(avl_tree)
 
 #-----------------------------------------------------------------------------------------
 
-#Root dir src
 set(SOURCE
-    ./main.cpp)
-
-#Figures
-set(FIGURES_SRC)
-
-#Debug
-set(DEBUG_UTILS
-    ../debug_utils/error_control.cpp)
-
-include_directories(${PROJECT_NAME} PRIVATE ./figures/include)
+    ./main.cpp
+    ./ui/ui.cpp)
 
 #-----------------------------------------------------------------------------------------
-
-add_library(figures ${FIGURES_SRC})
 
 add_executable(${PROJECT_NAME} ${SOURCE} ${DEBUG_UTILS})
-target_link_libraries(${PROJECT_NAME} figures)
+target_link_libraries(${PROJECT_NAME} graphviz debug_utils)
 
+target_include_directories(${PROJECT_NAME} PRIVATE ./ui
+                                                    ./include/)
 
 
 
