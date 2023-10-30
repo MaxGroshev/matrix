@@ -4,20 +4,23 @@ template<typename T>
 void node_t::print_node (T* data_node, std::ofstream& graphviz_strm) {
     assert(data_node != nullptr);
     assert(graphviz_strm.good());
-    // std::cerr << "Here\n";
-    // std::cout << shape << '\n';
-    graphviz_strm << "node" << (data_node->data_) <<       " [shape      = \"" << shape
+
+    graphviz_strm << "node" << data_node <<       " [shape      = \"" << shape
                << "\", width = 1.1, height = 1.21,  fillcolor   = \"" << fillcolor
                << "\", style = \""    << style << "\", fontcolor= \" " << fontcolor
                << "\", fontname = \"" << fontname << "\", color = \"" << color
-               << "\", label = \"{"   << data_node->data_ << "}\"]\n";
+               << "\", label = \"{"   << data_node->key_
+               << "| height: "         << data_node->height_  <<"}\"]\n";
 }
 
 //-----------------------------------------------------------------------------------------
 
 template<typename T>
 void edge_t::print_edge (T* node_from, T* node_to, std::ofstream& graphviz_strm) {
-    graphviz_strm << "node" << node_from << " -> node" << node_to << " color = \"" << color
+    assert(node_from != nullptr && node_to != nullptr);
+    assert(graphviz_strm.good());
+
+    graphviz_strm << "node" << node_from << " -> node" << node_to << " [color = \"" << color
                << "\", style = \""    << style << "\", constraint = " << constraint
                << ", fillcolor = \""  << fillcolor << "\",   fontcolor = \"" << fontcolor
                << "\", fontname = \"" << fontname  << "\", label = \"" << label << "\"];\n";
