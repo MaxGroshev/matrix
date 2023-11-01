@@ -19,15 +19,11 @@ set (UNIT_TESTS
 set (E2E_TESTS
     ./end_to_end_tests/e2e_test.py)
 
-#Debug
-set (DEBUG_UTILS
-    ../debug_utils/error_control.cpp)
-
 #-----------------------------------------------------------------------------------------
 
 add_executable            (unit_tests ${UNIT_TESTS} ${HEADERS} ${DEBUG_UTILS})
 target_include_directories(unit_tests PRIVATE${GTEST_INCLUDE_DIRS})
-target_link_libraries     (unit_tests ${GTEST_BOTH_LIBRARIES} figures)
+target_link_libraries     (unit_tests ${GTEST_BOTH_LIBRARIES} debug_utils)
 
 enable_testing()
 add_test(NAME unit_testst COMMAND ./unit_tests) #do not know how to use

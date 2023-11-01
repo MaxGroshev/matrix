@@ -4,7 +4,6 @@ template<typename T>
 void node_t::print_node (T* data_node, std::ofstream& graphviz_strm) {
     assert(data_node != nullptr);
     assert(graphviz_strm.good());
-
     graphviz_strm << "node" << data_node <<       " [shape      = \"" << shape
                << "\", width = 1.1, height = 1.21,  fillcolor   = \"" << fillcolor
                << "\", style = \""    << style << "\", fontcolor= \" " << fontcolor
@@ -19,7 +18,6 @@ template<typename T>
 void edge_t::print_edge (T* node_from, T* node_to, std::ofstream& graphviz_strm) {
     assert(node_from != nullptr && node_to != nullptr);
     assert(graphviz_strm.good());
-
     graphviz_strm << "node" << node_from << " -> node" << node_to << " [color = \"" << color
                << "\", style = \""    << style << "\", constraint = " << constraint
                << ", fillcolor = \""  << fillcolor << "\",   fontcolor = \"" << fontcolor
