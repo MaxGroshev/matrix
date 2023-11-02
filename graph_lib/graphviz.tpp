@@ -8,8 +8,8 @@ void node_t::print_node (T* data_node, std::ofstream& graphviz_strm) {
                << "\", width = 1.1, height = 1.21,  fillcolor   = \"" << fillcolor
                << "\", style = \""    << style << "\", fontcolor= \" " << fontcolor
                << "\", fontname = \"" << fontname << "\", color = \"" << color
-               << "\", label = \"{"   << data_node->key_
-               << "| height: "         << data_node->height_  <<"}\"]\n";
+               << "\", label = \"{key: "<< data_node->key_ /*<< "| data: " << data_node->data_*/
+               << "| height: "          << data_node->height_  <<"}\"]\n";
 }
 
 //-----------------------------------------------------------------------------------------

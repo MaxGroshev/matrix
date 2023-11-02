@@ -1,62 +1,67 @@
 #include "utils.hpp"
+#include <stack>
 
 //-----------------------------------------------------------------------------------------
 
 namespace avl {
 
-template <typename T>
+template <typename T, typename key_type = int>
 class node_t {
     public:
-        T key_;
-        node_t<T>* left_ = nullptr;
-        node_t<T>* right_ = nullptr;
+        key_type key_;
+        T data_;
+        node_t<T, key_type>* left_ = nullptr;
+        node_t<T, key_type>* right_ = nullptr;
         size_t height_ = 1;
 
-        node_t(T key) : key_(key), left_(nullptr), right_(nullptr) {};
-        node_t(const node_t<T>& node) : key_(node.key_), height_(node.height_) {
-
+        node_t(key_type key, T data) : key_(key), data_(data), left_(nullptr), right_(nullptr) {};
+        node_t(const node_t<T, key_type>& node) : key_(node.key_), data_(node.data_),
+                                                                   height_(node.height_) {
             if (node.left_ != nullptr) {
-                left_ = new node_t<T>(*node.left_);
+                left_ = new node_t<T, key_type>(*node.left_);
                 ASSERT(left_ != nullptr);
             }
             if (node.right_ != nullptr) {
-                right_ =  new node_t<T>(*node.right_);
+                right_ =  new node_t<T, key_type>(*node.right_);
                 ASSERT(right_ != nullptr);
             }
         };
-        node_t(node_t<T>&& node) noexcept: key_(node.key_), height_(node.height_),
+        node_t(node_t<T>&& node) noexcept: key_(node.key_), data_(node.data_), height_(node.height_),
                                            left_(node.left_), right_(node.right_) {
             node.right_ = nullptr;
             node.left_  = nullptr;
         }
-        node_t<T>& operator= (const node_t<T>& node);
-        node_t<T>& operator= (node_t<T>&& node);
-        ~node_t() { delete left_; delete right_;};
-
+        node_t<T, key_type>& operator= (const node_t<T, key_type>& node);
+        node_t<T, key_type>& operator= (node_t<T, key_type>&& node);
+        ~node_t() {
+            delete right_;
+            delete left_;
+        }
 
         inline int find_balance_fact() {return (get_height(right_) - get_height(left_));};
-        inline size_t get_height(node_t<T>* node) {if (node) return node->height_;
+        inline size_t get_height(node_t<T, key_type>* node) {if (node) return node->height_;
                                                    else return 0;};
         inline void change_height() {
             height_ = 1 + find_max(get_height(left_), get_height(right_));
         }
 
 
-        inline node_t<T>* balance_subtree(T key);
-        inline node_t<T>* rotate_to_left();
-        inline node_t<T>* rotate_to_right();
-        inline node_t<T>* insert(avl::node_t<T>* cur_node, T key);
+        inline node_t<T, key_type>* balance_subtree(T key);
+        inline node_t<T, key_type>* rotate_to_left();
+        inline node_t<T, key_type>* rotate_to_right();
+        inline node_t<T, key_type>* insert(avl::node_t<T, key_type>* cur_node, T data, key_type key);
 
 
         inline void inorder_walk();
+        inline void store_inorder_walk(std::vector<T>* storage);
         inline size_t get_num_of_keys_in_range(size_t l_border, size_t r_border, size_t result);
         inline void graphviz_dump(graphviz::dump_graph_t& tree_dump);
 };
 
 //-----------------------------------------------------------------------------------------
 
-template<typename T>
-node_t<T>& node_t<T>::operator= (const node_t<T>& node) {
+template<typename T, typename key_type>
+node_t<T, key_type>& node_t<T, key_type>::operator= (const node_t<T, key_type>& node) {
     if (this == &node)
         return *this;
 
@@ -65,13 +70,14 @@ node_t<T>& node_t<T>::operator= (const node_t<T>& node) {
 
     key_ = node.key_;
     height_ = node.height_;
+    data_ = node.data_;
     left_ = new node_t<T> (*(node.left_));
     left_ = new node_t<T> (*(node.right_));
     return *this;
 }
 
-template<typename T>
-node_t<T>& node_t<T>::operator= (node_t<T>&& node) {
+template<typename T, typename key_type>
+node_t<T, key_type>& node_t<T, key_type>::operator= (node_t<T, key_type>&& node) {
     if (this == &node)
         return *this;
 
@@ -90,20 +96,21 @@ node_t<T>& node_t<T>::operator= (node_t<T>&& node) {
 
 //-----------------------------------------------------------------------------------------
 
-template<typename T>
-node_t<T>* node_t<T>::insert(avl::node_t<T>* cur_node, T key) {
+template<typename T, typename key_type>
+node_t<T, key_type>* node_t<T, key_type>::insert(avl::node_t<T, key_type>* cur_node, T data,
+                                                                            key_type key) {
 
     if (cur_node->key_ < key) {
         if (cur_node->right_ != nullptr)
-            right_ = right_->insert(right_, key);
+            right_ = right_->insert(right_, key, data);
         else
-            right_ = new node_t<T> (key);
+            right_ = new node_t<T> (key, data);
     }
     else if (cur_node->key_ > key) {
         if (left_ != nullptr)
-            left_ = left_->insert(left_, key);
+            left_ = left_->insert(left_, key, data);
         else
-            left_ = new node_t<T> (key);
+            left_ = new node_t<T> (key, data);
     }
 
     change_height();
@@ -112,8 +119,8 @@ node_t<T>* node_t<T>::insert(avl::node_t<T>* cur_node, T key) {
 
 //-----------------------------------------------------------------------------------------
 
-template<typename T>
-node_t<T>* node_t<T>::balance_subtree(T key) {
+template<typename T, typename key_type>
+node_t<T, key_type>* node_t<T, key_type>::balance_subtree(T key) {
 
     int delta = find_balance_fact();
     if (delta > 1) {
@@ -132,8 +139,8 @@ node_t<T>* node_t<T>::balance_subtree(T key) {
         return this;
 }
 
-template<typename T>
-node_t<T>* node_t<T>::rotate_to_left() {
+template<typename T, typename key_type>
+node_t<T, key_type>* node_t<T, key_type>::rotate_to_left() {
 
     node_t<T>* root = right_;
     node_t<T>* root_left = root->left_;
@@ -145,8 +152,8 @@ node_t<T>* node_t<T>::rotate_to_left() {
     return root;
 }
 
-template<typename T>
-node_t<T>* node_t<T>::rotate_to_right() {
+template<typename T, typename key_type>
+node_t<T, key_type>* node_t<T, key_type>::rotate_to_right() {
 
     node_t<T>* root = left_;
     node_t<T>* root_right = root->right_;
@@ -160,8 +167,8 @@ node_t<T>* node_t<T>::rotate_to_right() {
 
 //-----------------------------------------------------------------------------------------
 
-template<typename T> // IT DOES NOT WORK (TESTING VERSION)
-size_t node_t<T>::get_num_of_keys_in_range(size_t l_border, size_t r_border, size_t result) {
+template<typename T, typename key_type> // IT DOES NOT WORK (TESTING VERSION)
+size_t node_t<T, key_type>::get_num_of_keys_in_range(size_t l_border, size_t r_border, size_t result) {
 
     // std::cout << "Cur key_: " << key_ << '\n' << "Result: " << result << '\n';
     if (in_interval(l_border, r_border, key_)) {
@@ -179,8 +186,8 @@ size_t node_t<T>::get_num_of_keys_in_range(size_t l_border, size_t r_border, siz
 
 //-----------------------------------------------------------------------------------------
 
-template<typename T>
-void node_t<T>::inorder_walk() {
+template<typename T, typename key_type>
+void node_t<T, key_type>::inorder_walk() {
     std::cout << " ( ";
     if (left_ != nullptr) {
         left_->inorder_walk();
@@ -192,8 +199,19 @@ void node_t<T>::inorder_walk() {
     std::cout << " ) ";
 }
 
-template<typename T>
-void node_t<T>::graphviz_dump(graphviz::dump_graph_t& tree_dump) {
+template<typename T, typename key_type>
+void node_t<T, key_type>::store_inorder_walk(std::vector<T>* storage) {
+    if (left_ != nullptr) {
+        left_->store_inorder_walk(storage);
+    }
+    storage->push_back(key_);
+    if (right_ != nullptr) {
+        right_->store_inorder_walk(storage);
+    }
+}
+
+template<typename T, typename key_type>
+void node_t<T, key_type>::graphviz_dump(graphviz::dump_graph_t& tree_dump) {
     tree_dump.graph_node.print_node(this, tree_dump.graphviz_strm);
 
     if (left_ != nullptr)

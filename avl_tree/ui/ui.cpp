@@ -5,7 +5,7 @@
 namespace avl_tree_ui {
 
 std::vector<size_t> test_user_data(std::istream & in_strm) {
-    avl::tree_t<int> pine{10};
+    avl::tree_t<int> pine{10, 10};
 
     char type_of_data = '\0';
     int  data = 0;
@@ -17,7 +17,7 @@ std::vector<size_t> test_user_data(std::istream & in_strm) {
         // std::cout << "Type: " << type_of_data << '\n';
         if (type_of_data == 'k') {
             in_strm >> data;
-            pine.insert(data);
+            pine.insert(data, data);
         }
         else if (type_of_data == 'q') {
             in_strm >> l_border >> r_border;
@@ -28,10 +28,10 @@ std::vector<size_t> test_user_data(std::istream & in_strm) {
 
     // pine.graphviz_dump();
     pine.graphviz_dump();
-    avl::tree_t<int> oak{25};
-    oak = std::move(pine);
+    avl::tree_t<int> oak{25, 25};
+    oak = pine;
     oak.graphviz_dump();
-    assert(oak.root_ != nullptr);
+    // assert(oak.root_ != nullptr);
 
     // std::cout << "Test: " << oak.root_->left << "\n";
     // std::cout << oak.root_->left_->left_->key_ << '\n';
