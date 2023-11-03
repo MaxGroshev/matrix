@@ -5,37 +5,38 @@
 namespace avl_tree_ui {
 
 std::vector<size_t> test_user_data(std::istream & in_strm) {
-    avl::tree_t<int> pine{10, 10};
-
+    avl::tree_t<int, int> pine;
+    std::set<int> enemy_set;
     char type_of_data = '\0';
     int  data = 0;
-    size_t l_border = 0;
-    size_t r_border = 0;
+    int l_bound = 0;
+    int u_bound = 0;
+
     std::vector<size_t> result;
     for (int i = 0; !in_strm.eof(); i++) {
         in_strm >> type_of_data;
-        // std::cout << "Type: " << type_of_data << '\n';
         if (type_of_data == 'k') {
             in_strm >> data;
             pine.insert(data, data);
+            enemy_set.insert(data);
         }
         else if (type_of_data == 'q') {
-            in_strm >> l_border >> r_border;
-            result.push_back(pine.get_num_of_keys_in_range(l_border, r_border));
+            in_strm >> l_bound >> u_bound;
+
+            auto start_time = chrono_cur_time ();
+            result.push_back(pine.distance(l_bound, u_bound));
+            auto end_time = chrono_cur_time ();
+            std::cerr << "Run time: " <<(end_time - start_time) / 0.1ms  << '\n';
+
+            start_time = chrono_cur_time ();
+            range_query(enemy_set, l_bound, u_bound);
+            end_time = chrono_cur_time ();
+            std::cerr << "Run time: " <<(end_time - start_time) / 0.1ms  << '\n';
         }
         type_of_data = '\0'; //bad idea
     }
 
-    // pine.graphviz_dump();
     pine.graphviz_dump();
-    avl::tree_t<int> oak{25, 25};
-    oak = pine;
-    oak.graphviz_dump();
-    // assert(oak.root_ != nullptr);
-
-    // std::cout << "Test: " << oak.root_->left << "\n";
-    // std::cout << oak.root_->left_->left_->key_ << '\n';
-    // pine.root_->left_->key_ = 52;
 
     return result;
 }

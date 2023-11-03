@@ -1,6 +1,7 @@
 import subprocess
 import argparse
 import os
+import sys
 from   subprocess import Popen, PIPE, STDOUT
 
 # -----------------------------------------------------------------------------------------
@@ -21,9 +22,6 @@ class TERMINAL_COLORS:
         BOLD      = '\033[1m'
         UNDERLINE = '\033[4m'
 
-test_data = {
-
-}
 
 # -----------------------------------------------------------------------------------------
 
@@ -91,9 +89,13 @@ def run_test_data(test_data, name_of_testing_prog):
             passed_test += 1
     show_total_test_stat(n_of_test + 1, passed_test)
 
+
+
 # -----------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
+    for param in sys.argv:
+        print(param)
     # dir = os.path.abspath(__file__)
     print(dir)
-    run_test_data(test_data, "")
+    testgenerate_test_data(test_data, "")

@@ -14,7 +14,8 @@ class node_t {
         node_t<T, key_type>* right_ = nullptr;
         size_t height_ = 1;
 
-        node_t(key_type key, T data) : key_(key), data_(data), left_(nullptr), right_(nullptr) {};
+
+        node_t(key_type key, T data) : key_(key), data_(data) {};
         node_t(const node_t<T, key_type>& node) : key_(node.key_), data_(node.data_),
                                                                    height_(node.height_) {
             if (node.left_ != nullptr) {
@@ -38,6 +39,7 @@ class node_t {
             delete left_;
         }
 
+
         inline int find_balance_fact() {return (get_height(right_) - get_height(left_));};
         inline size_t get_height(node_t<T, key_type>* node) {if (node) return node->height_;
                                                    else return 0;};
@@ -54,7 +56,7 @@ class node_t {
 
         inline void inorder_walk();
         inline void store_inorder_walk(std::vector<T>* storage);
-        inline size_t get_num_of_keys_in_range(size_t l_border, size_t r_border, size_t result);
+        inline void distance(int l_bound, int u_bound, size_t* result);
         inline void graphviz_dump(graphviz::dump_graph_t& tree_dump);
 };
 
@@ -167,21 +169,20 @@ node_t<T, key_type>* node_t<T, key_type>::rotate_to_right() {
 
 //-----------------------------------------------------------------------------------------
 
-template<typename T, typename key_type> // IT DOES NOT WORK (TESTING VERSION)
-size_t node_t<T, key_type>::get_num_of_keys_in_range(size_t l_border, size_t r_border, size_t result) {
-
-    // std::cout << "Cur key_: " << key_ << '\n' << "Result: " << result << '\n';
-    if (in_interval(l_border, r_border, key_)) {
-        result++;
+template<typename T, typename key_type>
+void node_t<T, key_type>::distance(int l_bound, int u_bound, size_t* result) {
+    // static int cnt = 0;
+    // std::cout << "Cur key_: " << key_ << '\n' << "Result: " << *result <<  ' ' << cnt <<'\n';
+    // cnt++;
+    if (in_interval(l_bound, u_bound, key_)) {
+        (*result)++;
     }
-    if (left_ != nullptr && left_->key_ >= l_border) {
-        return left_->get_num_of_keys_in_range(l_border, r_border, result);
+    if (left_ != nullptr && key_ >= l_bound) {
+        left_->distance(l_bound, u_bound, result);
     }
-    else if (right_ != nullptr && left_->key_ <= r_border) {
-        return right_->get_num_of_keys_in_range(l_border, r_border, result);
+    if (right_ != nullptr && key_ <= u_bound) {
+        right_->distance(l_bound, u_bound, result);
     }
-
-    return result;
 }
 
 //-----------------------------------------------------------------------------------------

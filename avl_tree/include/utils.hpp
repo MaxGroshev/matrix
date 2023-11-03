@@ -10,8 +10,8 @@ T find_max (const T x, const T y) {
     return y;
 }
 
-static bool in_interval(const size_t l_border, const size_t r_border, const size_t val) {
-    if (val >= l_border && val <= r_border) return true;
+static bool in_interval(const int l_bound, const int u_bound, const int val) {
+    if (val >= l_bound && val <= u_bound) return true;
     return false;
 }
 
