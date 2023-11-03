@@ -27,8 +27,8 @@ class node_t {
                 ASSERT(right_ != nullptr);
             }
         };
-        node_t(node_t<T>&& node) noexcept: key_(node.key_), data_(node.data_), height_(node.height_),
-                                           left_(node.left_), right_(node.right_) {
+        node_t(node_t<T>&& node) noexcept: key_(node.key_), data_(node.data_),
+                  height_(node.height_), left_(node.left_), right_(node.right_) {
             node.right_ = nullptr;
             node.left_  = nullptr;
         }

@@ -18,24 +18,25 @@ def print_test_data(args, test_data):
                 dat_file.write("\n")
     dat_file.write("q %d %d "%  (args.lub[0], args.lub[1]))
     for (key) in (test_data.keys()):
-        dat_file.write(": %d "%  key)
+        dat_file.write(": (%d) "%  key)
 
     dat_file.close()
 
 
 def generate_test_data(args):
     rand_list = []
+    my_set = set(rand_list)
 
-    while (len(rand_list) != args.num):
+    while (len(my_set) != args.num):
         val = random.randint(args.vd[0], args.vd[1])
-        if val not in rand_list:
+        if val not in my_set:
+            my_set.add(val)
             rand_list.append(val)
             continue
-    sorted_list = rand_list.copy()
-    sorted_list.sort()
 
     res = 0
-    for elem in sorted_list:
+    my_list = list(my_set)
+    for elem in my_list:
         if (elem >= args.lub[0] and elem <= args.lub[1]):
             res += 1
 

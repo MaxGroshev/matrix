@@ -36,7 +36,7 @@ std::vector<size_t> test_user_data(std::istream & in_strm) {
         type_of_data = '\0'; //bad idea
     }
 
-    pine.graphviz_dump();
+    // pine.graphviz_dump();
 
     return result;
 }
