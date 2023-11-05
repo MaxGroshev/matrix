@@ -13,7 +13,7 @@ std::vector<size_t> test_user_data(std::istream & in_strm) {
     int u_bound = 0;
 
     std::vector<size_t> result;
-    for (int i = 0; !in_strm.eof(); i++) {
+    while(!in_strm.eof()) { //^D to exit from cin input
         in_strm >> type_of_data;
         if (type_of_data == 'k') {
             in_strm >> data;
@@ -36,7 +36,7 @@ std::vector<size_t> test_user_data(std::istream & in_strm) {
         type_of_data = '\0'; //bad idea
     }
 
-    // pine.graphviz_dump();
+    pine.graphviz_dump();
 
     return result;
 }

@@ -10,8 +10,10 @@ class node_t {
     public:
         key_type key_;
         T data_;
-        node_t<T, key_type>* left_ = nullptr;
+        size_t size_ = 1;
+        node_t<T, key_type>* left_  = nullptr;
         node_t<T, key_type>* right_ = nullptr;
+        node_t<T, key_type>* parent_ = nullptr;
         size_t height_ = 1;
 
 
@@ -28,7 +30,7 @@ class node_t {
             }
         };
         node_t(node_t<T>&& node) noexcept: key_(node.key_), data_(node.data_),
-                  height_(node.height_), left_(node.left_), right_(node.right_) {
+                height_(node.height_), left_(node.left_), right_(node.right_) {
             node.right_ = nullptr;
             node.left_  = nullptr;
         }
@@ -57,10 +59,18 @@ class node_t {
         inline void inorder_walk();
         inline void store_inorder_walk(std::vector<T>* storage);
         inline void distance(int l_bound, int u_bound, size_t* result);
+        inline node_t<T, key_type>* upper_bound(key_type key) const;
+        inline node_t<T, key_type>* lower_bound(key_type key) const;
         inline void graphviz_dump(graphviz::dump_graph_t& tree_dump);
-};
 
+        inline size_t define_node_rang(size_t key_rang) const;
+};
+}
+#include "./avl_walk.tpp"
+#include "./avl_range.tpp"
 //-----------------------------------------------------------------------------------------
+
+namespace avl {
 
 template<typename T, typename key_type>
 node_t<T, key_type>& node_t<T, key_type>::operator= (const node_t<T, key_type>& node) {
@@ -168,67 +178,4 @@ node_t<T, key_type>* node_t<T, key_type>::rotate_to_right() {
 }
 
 //-----------------------------------------------------------------------------------------
-
-template<typename T, typename key_type>
-void node_t<T, key_type>::distance(int l_bound, int u_bound, size_t* result) {
-    // static int cnt = 0;
-    // std::cout << "Cur key_: " << key_ << '\n' << "Result: " << *result <<  ' ' << cnt <<'\n';
-    // cnt++;
-    if (in_interval(l_bound, u_bound, key_)) {
-        (*result)++;
-    }
-    if (left_ != nullptr && key_ >= l_bound) {
-        left_->distance(l_bound, u_bound, result);
-    }
-    if (right_ != nullptr && key_ <= u_bound) {
-        right_->distance(l_bound, u_bound, result);
-    }
 }
-
-//-----------------------------------------------------------------------------------------
-
-template<typename T, typename key_type>
-void node_t<T, key_type>::inorder_walk() {
-    std::cout << " ( ";
-    if (left_ != nullptr) {
-        left_->inorder_walk();
-    }
-    std::cout << key_;
-    if (right_ != nullptr) {
-        right_->inorder_walk();
-    }
-    std::cout << " ) ";
-}
-
-template<typename T, typename key_type>
-void node_t<T, key_type>::store_inorder_walk(std::vector<T>* storage) {
-    if (left_ != nullptr) {
-        left_->store_inorder_walk(storage);
-    }
-    storage->push_back(key_);
-    if (right_ != nullptr) {
-        right_->store_inorder_walk(storage);
-    }
-}
-
-template<typename T, typename key_type>
-void node_t<T, key_type>::graphviz_dump(graphviz::dump_graph_t& tree_dump) {
-    tree_dump.graph_node.print_node(this, tree_dump.graphviz_strm);
-
-    if (left_ != nullptr)
-    {
-        tree_dump.graph_edge.fillcolor = "#7FC7FF";
-        tree_dump.graph_edge.color     = "#7FC7FF";
-        tree_dump.graph_edge.print_edge(this, left_, tree_dump.graphviz_strm);
-        left_->graphviz_dump(tree_dump);
-    }
-    if (right_ != nullptr)
-    {
-        tree_dump.graph_edge.fillcolor = "#DC143C";
-        tree_dump.graph_edge.color     = "#DC143C";
-        tree_dump.graph_edge.print_edge(this, right_, tree_dump.graphviz_strm);
-        right_->graphviz_dump(tree_dump);
-    }
-}
-}
-

@@ -29,6 +29,8 @@ class tree_t final {
 
         inline void insert(key_type key, T data);
         inline size_t distance(int l_bound, int u_bound);
+        inline node_t<T, key_type>* upper_bound(key_type key) const;
+        inline node_t<T, key_type>* lower_bound(key_type key) const;
         inline void inorder_walk() const;
         inline void store_inorder_walk(std::vector<T>* storage) const;
         inline void graphviz_dump() const;
@@ -40,22 +42,23 @@ class tree_t final {
 template<typename T, typename key_type>
 tree_t<T, key_type>::~tree_t<T, key_type> () {
     std::stack<node_t<T, key_type>*> nodes;
-        nodes.push(root_);
-        node_t<T, key_type>* front = nullptr;
-        while(!nodes.empty()) {
-            front = nodes.top();
-            nodes.pop();
-            if (front != nullptr) { //case of deleteing after move constr
-                if (front->left_ != nullptr) {
-                    nodes.push(front->left_);
-                }
-                if (front->right_ != nullptr) {
-                    nodes.push(front->right_);
-                }
+    nodes.push(root_);
+    node_t<T, key_type>* front = nullptr;
+
+    while(!nodes.empty()) {
+        front = nodes.top();
+        nodes.pop();
+        if (front != nullptr) { //case of deleteing after move constr
+            if (front->left_ != nullptr) {
+                nodes.push(front->left_);
             }
-            front->left_ = nullptr;  //to not delete children recursively as node has
-            front->right_ = nullptr; //ability to be destructed recursively
-            delete front;
+            if (front->right_ != nullptr) {
+                nodes.push(front->right_);
+            }
+        }
+        front->left_  = nullptr;  //to not delete children recursively as node has
+        front->right_ = nullptr; //ability to be destructed recursively
+        delete front;
     }
 }
 
@@ -88,6 +91,16 @@ void tree_t<T, key_type>::insert(key_type key, T data) {
         root_ = new node_t<T, key_type> (key, data);
     }
     root_ = root_->insert(root_, key, data);
+}
+
+template<typename T, typename key_type>
+node_t<T, key_type>* tree_t<T, key_type>::upper_bound(key_type key) const {
+    return root_->upper_bound(key);
+}
+
+template<typename T, typename key_type>
+node_t<T, key_type>* tree_t<T, key_type>::lower_bound(key_type key) const {
+    return root_->lower_bound(key);
 }
 
 template<typename T, typename key_type>
