@@ -24,7 +24,7 @@ struct node_t
     std::string label     = "";
 
     template<typename T>
-    inline void print_node(T* data_node, std::ofstream& graphviz_strm);
+    inline void print_node(const T* data_node, std::ofstream& graphviz_strm);
 };
 
 struct edge_t
@@ -38,7 +38,7 @@ struct edge_t
     std::string label      = "";
 
     template<typename T>
-    inline void print_edge(T* node_from, T* node_to, std::ofstream& graphviz_strm);
+    inline void print_edge(const T* node_from, const T* node_to, std::ofstream& graphviz_strm);
 };
 
 struct dump_graph_t
@@ -58,7 +58,7 @@ struct dump_graph_t
         graphviz_strm << "rankdir = \"" << orientation << "\"\n";
         graphviz_strm << "splines = \"" << splines << "\"\n\n";
     }
-    inline void run_graphviz  (const char* dot_dir, const char* pic_dir);
+    inline void run_graphviz (const char* dot_dir, const char* pic_dir);
 };
 
 //-----------------------------------------------------------------------------------------

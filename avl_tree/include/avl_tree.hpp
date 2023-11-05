@@ -6,7 +6,7 @@ namespace avl {
 
 template<typename T, typename key_type = int>
 class tree_t final {
-    public:
+    private:
         node_t<T, key_type>* root_ = nullptr;
     public:
         tree_t(){};
@@ -27,10 +27,11 @@ class tree_t final {
         tree_t<T, key_type>& operator= (tree_t<T, key_type>&& tree);
         ~tree_t();
 
-        inline void insert(key_type key, T data);
-        inline size_t distance(int l_bound, int u_bound);
-        inline node_t<T, key_type>* upper_bound(key_type key) const;
-        inline node_t<T, key_type>* lower_bound(key_type key) const;
+        inline void   insert(key_type key, T data);
+        inline size_t range_query(int l_bound, int u_bound);
+        inline size_t distance(node_t<T, key_type>* l_node, node_t<T, key_type>* u_node) const;
+        inline node_t<T, key_type>* upper_bound(key_type key);
+        inline node_t<T, key_type>* lower_bound(key_type key);
         inline void inorder_walk() const;
         inline void store_inorder_walk(std::vector<T>* storage) const;
         inline void graphviz_dump() const;
@@ -41,6 +42,9 @@ class tree_t final {
 
 template<typename T, typename key_type>
 tree_t<T, key_type>::~tree_t<T, key_type> () {
+
+    if (root_ == nullptr) return;
+
     std::stack<node_t<T, key_type>*> nodes;
     nodes.push(root_);
     node_t<T, key_type>* front = nullptr;
@@ -56,7 +60,7 @@ tree_t<T, key_type>::~tree_t<T, key_type> () {
                 nodes.push(front->right_);
             }
         }
-        front->left_  = nullptr;  //to not delete children recursively as node has
+        front->left_  = nullptr; //to not delete children recursively as node has
         front->right_ = nullptr; //ability to be destructed recursively
         delete front;
     }
@@ -93,21 +97,45 @@ void tree_t<T, key_type>::insert(key_type key, T data) {
     root_ = root_->insert(root_, key, data);
 }
 
+//-----------------------------------------------------------------------------------------
+
 template<typename T, typename key_type>
-node_t<T, key_type>* tree_t<T, key_type>::upper_bound(key_type key) const {
-    return root_->upper_bound(key);
+node_t<T, key_type>* tree_t<T, key_type>::upper_bound(key_type key) {
+    node_t<T, key_type>* node = root_->upper_bound(key);
+    ASSERT(node != nullptr);
+    return node;
 }
 
 template<typename T, typename key_type>
-node_t<T, key_type>* tree_t<T, key_type>::lower_bound(key_type key) const {
-    return root_->lower_bound(key);
+node_t<T, key_type>* tree_t<T, key_type>::lower_bound(key_type key) {
+    node_t<T, key_type>* node = root_->lower_bound(key);
+    ASSERT(node != nullptr);
+    return node;
 }
 
 template<typename T, typename key_type>
-size_t tree_t<T, key_type>::distance(int l_bound, int u_bound) {
-    size_t result = 0;
-    root_->distance(l_bound, u_bound, &result);
-    return result;
+size_t tree_t<T, key_type>::range_query(int l_bound, int u_bound) {
+
+    if (l_bound > u_bound) {
+        std::cout << "Incorrect input\n";
+        return -1;
+    }
+    node_t<T, key_type>* l_node = upper_bound(u_bound);
+    node_t<T, key_type>* u_node = lower_bound(l_bound);
+    ASSERT(l_node != nullptr && u_node != nullptr);
+
+    // std::cout << "Hereeeee" << node1->key_ <<'\n';
+    return distance(l_node, u_node);
+}
+
+template<typename T, typename key_type>
+size_t tree_t<T, key_type>::distance(node_t<T, key_type>* l_node,
+                                     node_t<T, key_type>* u_node) const {
+    ASSERT(l_node != nullptr && u_node != nullptr);
+
+    size_t u_bound_rank = l_node->define_node_rank(root_);
+    size_t l_bound_rank = u_node->define_node_rank(root_);
+    return u_bound_rank - l_bound_rank + 1;
 }
 
 //-----------------------------------------------------------------------------------------

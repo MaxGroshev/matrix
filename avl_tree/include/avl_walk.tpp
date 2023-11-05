@@ -1,7 +1,7 @@
 namespace avl {
 
 template<typename T, typename key_type>
-void node_t<T, key_type>::inorder_walk() {
+void node_t<T, key_type>::inorder_walk() const {
     std::cout << " ( ";
     if (left_ != nullptr) {
         left_->inorder_walk();
@@ -14,7 +14,7 @@ void node_t<T, key_type>::inorder_walk() {
 }
 
 template<typename T, typename key_type>
-void node_t<T, key_type>::store_inorder_walk(std::vector<T>* storage) {
+void node_t<T, key_type>::store_inorder_walk(std::vector<T>* storage) const {
     if (left_ != nullptr) {
         left_->store_inorder_walk(storage);
     }
@@ -25,7 +25,7 @@ void node_t<T, key_type>::store_inorder_walk(std::vector<T>* storage) {
 }
 
 template<typename T, typename key_type>
-void node_t<T, key_type>::graphviz_dump(graphviz::dump_graph_t& tree_dump) {
+void node_t<T, key_type>::graphviz_dump(graphviz::dump_graph_t& tree_dump) const {
     tree_dump.graph_node.print_node(this, tree_dump.graphviz_strm);
 
     if (left_ != nullptr)

@@ -10,10 +10,10 @@ class node_t {
     public:
         key_type key_;
         T data_;
-        size_t size_ = 1;
         node_t<T, key_type>* left_  = nullptr;
         node_t<T, key_type>* right_ = nullptr;
-        node_t<T, key_type>* parent_ = nullptr;
+        node_t<T, key_type>* parent_= nullptr;
+        size_t size_   = 1;
         size_t height_ = 1;
 
 
@@ -28,11 +28,13 @@ class node_t {
                 right_ =  new node_t<T, key_type>(*node.right_);
                 ASSERT(right_ != nullptr);
             }
-        };
-        node_t(node_t<T>&& node) noexcept: key_(node.key_), data_(node.data_),
-                height_(node.height_), left_(node.left_), right_(node.right_) {
+        }
+        node_t(node_t<T>&& node) noexcept: key_(node.key_),      data_(node.data_),
+                                           parent_(node.parent), height_(node.height_),
+                                           left_(node.left_),    right_(node.right_) {
             node.right_ = nullptr;
             node.left_  = nullptr;
+            node.prent_ = nullptr;
         }
         node_t<T, key_type>& operator= (const node_t<T, key_type>& node);
         node_t<T, key_type>& operator= (node_t<T, key_type>&& node);
@@ -42,28 +44,34 @@ class node_t {
         }
 
 
-        inline int find_balance_fact() {return (get_height(right_) - get_height(left_));};
-        inline size_t get_height(node_t<T, key_type>* node) {if (node) return node->height_;
-                                                   else return 0;};
+        inline int find_balance_fact() const {
+            return (get_height(right_) - get_height(left_));
+        }
+        inline size_t get_height(node_t<T, key_type>* node) const {
+            if (node) return node->height_; else return 0;
+        }
         inline void change_height() {
             height_ = 1 + find_max(get_height(left_), get_height(right_));
+        }
+        inline size_t get_size(node_t<T, key_type>* node) const {
+            if (node) return node->size_; else return 0;
         }
 
 
         inline node_t<T, key_type>* balance_subtree(T key);
         inline node_t<T, key_type>* rotate_to_left();
         inline node_t<T, key_type>* rotate_to_right();
-        inline node_t<T, key_type>* insert(avl::node_t<T, key_type>* cur_node, T data, key_type key);
+        inline node_t<T, key_type>* insert(avl::node_t<T, key_type>* cur_node,
+                                           T data, key_type key);
 
 
-        inline void inorder_walk();
-        inline void store_inorder_walk(std::vector<T>* storage);
-        inline void distance(int l_bound, int u_bound, size_t* result);
-        inline node_t<T, key_type>* upper_bound(key_type key) const;
-        inline node_t<T, key_type>* lower_bound(key_type key) const;
-        inline void graphviz_dump(graphviz::dump_graph_t& tree_dump);
+        inline void inorder_walk() const;
+        inline void store_inorder_walk(std::vector<T>* storage) const;
+        inline void graphviz_dump(graphviz::dump_graph_t& tree_dump) const ;
+        inline node_t<T, key_type>* upper_bound(key_type key);
+        inline node_t<T, key_type>* lower_bound(key_type key);
 
-        inline size_t define_node_rang(size_t key_rang) const;
+        inline size_t define_node_rank(node_t<T, key_type>* root) const;
 };
 }
 #include "./avl_walk.tpp"
@@ -79,6 +87,7 @@ node_t<T, key_type>& node_t<T, key_type>::operator= (const node_t<T, key_type>& 
 
     delete left_;
     delete right_;
+    delete parent_;
 
     key_ = node.key_;
     height_ = node.height_;
@@ -95,14 +104,17 @@ node_t<T, key_type>& node_t<T, key_type>::operator= (node_t<T, key_type>&& node)
 
     delete left_;
     delete right_;
+    delete parent_;
 
     left_ = node.left_;
     right_ = node.right_;
+    parent_ = node.parent_;
     key_ = node.key_;
     height_ = node.height_;
 
     node.right_ = nullptr;
     node.left_  = nullptr;
+    node.parent_ = nullptr;
     return *this;
 }
 
@@ -111,21 +123,27 @@ node_t<T, key_type>& node_t<T, key_type>::operator= (node_t<T, key_type>&& node)
 template<typename T, typename key_type>
 node_t<T, key_type>* node_t<T, key_type>::insert(avl::node_t<T, key_type>* cur_node, T data,
                                                                             key_type key) {
-
     if (cur_node->key_ < key) {
-        if (cur_node->right_ != nullptr)
+        if (cur_node->right_ != nullptr) {
             right_ = right_->insert(right_, key, data);
-        else
+        }
+        else {
             right_ = new node_t<T> (key, data);
+        }
+        right_->parent_ = this;
     }
     else if (cur_node->key_ > key) {
-        if (left_ != nullptr)
+        if (left_ != nullptr) {
             left_ = left_->insert(left_, key, data);
-        else
+        }
+        else {
             left_ = new node_t<T> (key, data);
+        }
+        left_->parent_ = this;
     }
 
     change_height();
+    size_ = get_size(left_) + get_size(right_) + 1;
     return balance_subtree(key);
 }
 
@@ -137,13 +155,17 @@ node_t<T, key_type>* node_t<T, key_type>::balance_subtree(T key) {
     int delta = find_balance_fact();
     if (delta > 1) {
         if (key < right_->key_) { //complicated condition
+            // std::cout << "RR rotate";
             right_ = right_->rotate_to_right();
+            right_->parent_ = this;
         }
         return rotate_to_left();
     }
     else if (delta < -1) {
         if (key > left_->key_) {
+            // std::cout << "LL rotate";
             left_ = left_->rotate_to_left();
+            left_->parent_ = this;
         }
         return rotate_to_right();
     }
@@ -155,12 +177,21 @@ template<typename T, typename key_type>
 node_t<T, key_type>* node_t<T, key_type>::rotate_to_left() {
 
     node_t<T>* root = right_;
-    node_t<T>* root_left = root->left_;
+    node_t<T>* root_left = right_->left_;
     root->left_  = this;
     right_ = root_left;
 
+    root->left_->parent_ = root;
+    if (root_left) {
+        root_left->parent_ = this;
+    }
+
     root->left_->change_height();
     root->change_height();
+    root->size_ = root->left_->size_;
+    root->left_->size_ = get_size(root->left_->right_) +
+                         get_size(root->left_->left_) + 1;
+
     return root;
 }
 
@@ -168,14 +199,21 @@ template<typename T, typename key_type>
 node_t<T, key_type>* node_t<T, key_type>::rotate_to_right() {
 
     node_t<T>* root = left_;
-    node_t<T>* root_right = root->right_;
+    node_t<T>* root_right = left_->right_;
     root->right_ = this;
     left_ = root_right;
 
+    root->right_->parent_ = root;
+    if (root_right) {
+        root_right->parent_ = this;
+    }
+
     root->right_->change_height();
     root->change_height();
+    root->size_ = root->right_->size_;
+    root->right_->size_ = get_size(root->right_->right_) +
+                          get_size(root->right_->left_) + 1;
+
     return root;
 }
-
-//-----------------------------------------------------------------------------------------
 }

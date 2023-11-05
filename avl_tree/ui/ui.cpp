@@ -4,11 +4,10 @@
 
 namespace avl_tree_ui {
 
-std::vector<size_t> test_user_data(std::istream & in_strm) {
+std::vector<size_t> run_tree(std::istream & in_strm) {
     avl::tree_t<int, int> pine;
-    std::set<int> enemy_set;
     char type_of_data = '\0';
-    int  data = 0;
+    int data    = 0;
     int l_bound = 0;
     int u_bound = 0;
 
@@ -18,27 +17,81 @@ std::vector<size_t> test_user_data(std::istream & in_strm) {
         if (type_of_data == 'k') {
             in_strm >> data;
             pine.insert(data, data);
+        }
+        else if (type_of_data == 'q') {
+            in_strm >> l_bound >> u_bound;
+
+            auto tree_start_time = chrono_cur_time ();
+            result.push_back(pine.range_query(l_bound, u_bound));
+            auto tree_end_time = chrono_cur_time ();
+            std::cerr << "Run time: " <<
+                                    (tree_end_time - tree_start_time) / 0.1ms  << '\n';
+        }
+        type_of_data = '\0';
+    }
+    // pine.graphviz_dump();
+
+    return result;
+}
+
+void run_set(std::istream & in_strm) {
+    std::set<int> enemy_set;
+    char type_of_data = '\0';
+    int data    = 0;
+    int l_bound = 0;
+    int u_bound = 0;
+
+    while(!in_strm.eof()) { //^D to exit from cin input
+        in_strm >> type_of_data;
+        if (type_of_data == 'k') {
+            in_strm >> data;
             enemy_set.insert(data);
         }
         else if (type_of_data == 'q') {
             in_strm >> l_bound >> u_bound;
 
-            auto start_time = chrono_cur_time ();
-            result.push_back(pine.distance(l_bound, u_bound));
-            auto end_time = chrono_cur_time ();
-            std::cerr << "Run time: " <<(end_time - start_time) / 0.1ms  << '\n';
-
-            start_time = chrono_cur_time ();
-            range_query(enemy_set, l_bound, u_bound);
-            end_time = chrono_cur_time ();
-            std::cerr << "Run time: " <<(end_time - start_time) / 0.1ms  << '\n';
+            auto set_start_time = chrono_cur_time ();
+            std::cout << "Set res: " << range_query(enemy_set, l_bound, u_bound) << '\n';
+            auto set_end_time = chrono_cur_time ();
+            std::cerr << "Set run time: " <<
+                                        (set_end_time - set_start_time) / 0.1ms  << '\n';
         }
-        type_of_data = '\0'; //bad idea
+        type_of_data = '\0';
     }
+}
 
-    pine.graphviz_dump();
+void run_set_and_tree(std::istream & in_strm) {
+    avl::tree_t<int, int> pine;
+    std::set<int> enemy_set;
+    char type_of_data = '\0';
+    int data    = 0;
+    int l_bound = 0;
+    int u_bound = 0;
 
-    return result;
+    while(!in_strm.eof()) {
+        in_strm >> type_of_data;
+        if (type_of_data == 'k') {
+            in_strm >> data;
+            pine.insert(data, data);
+            enemy_set.insert(data);
+        }
+        else if (type_of_data == 'q') {
+            in_strm >> l_bound >> u_bound;
+
+            auto tree_start_time = chrono_cur_time ();
+            std::cout << "AVL tree res: " << pine.range_query(l_bound, u_bound) << "\n";
+            auto tree_end_time = chrono_cur_time ();
+            std::cerr << "AVL tree run time: " <<
+                                    (tree_end_time - tree_start_time) / 0.1ms  << '\n';
+
+            auto set_start_time = chrono_cur_time ();
+            std::cout << "Set res" << range_query(enemy_set, l_bound, u_bound);
+            auto set_end_time = chrono_cur_time ();
+            std::cerr << "Set Run time: " <<
+                                     (set_end_time - set_start_time) / 0.1ms  << '\n';
+        }
+        type_of_data = '\0';
+    }
 }
 
 }
