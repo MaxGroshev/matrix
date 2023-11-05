@@ -12,16 +12,16 @@ class tree_t final {
         tree_t(){};
         tree_t(key_type key, T data) {
             root_ = new node_t(key, data);
-            ASSERT(root_ != nullptr);
+            assert(root_ != nullptr);
         };
         tree_t(const tree_t<T, key_type>& tree) {
             root_ = new node_t<T> (*(tree.root_));
-            ASSERT(root_ != nullptr);
+            assert(root_ != nullptr);
         };
         tree_t(tree_t<T>&& tree) noexcept {
             root_ = tree.root_;
             tree.root_ = nullptr;
-            ASSERT(root_ != nullptr);
+            assert(root_ != nullptr);
         };
         tree_t<T, key_type>& operator= (const tree_t<T, key_type>& tree);
         tree_t<T, key_type>& operator= (tree_t<T, key_type>&& tree);
@@ -73,6 +73,7 @@ tree_t<T, key_type>& tree_t<T, key_type>::operator= (const tree_t<T, key_type>& 
 
     delete root_;
     root_ = new node_t<T, key_type> (*(tree.root_));
+    assert(root_ != nullptr);
     return *this;
 }
 
@@ -93,6 +94,7 @@ template<typename T, typename key_type>
 void tree_t<T, key_type>::insert(key_type key, T data) {
     if (root_ == nullptr) {
         root_ = new node_t<T, key_type> (key, data);
+        assert(root_ != nullptr);
     }
     root_ = root_->insert(root_, key, data);
 }
@@ -102,14 +104,14 @@ void tree_t<T, key_type>::insert(key_type key, T data) {
 template<typename T, typename key_type>
 node_t<T, key_type>* tree_t<T, key_type>::upper_bound(key_type key) {
     node_t<T, key_type>* node = root_->upper_bound(key);
-    ASSERT(node != nullptr);
+    assert(node != nullptr);
     return node;
 }
 
 template<typename T, typename key_type>
 node_t<T, key_type>* tree_t<T, key_type>::lower_bound(key_type key) {
     node_t<T, key_type>* node = root_->lower_bound(key);
-    ASSERT(node != nullptr);
+    assert(node != nullptr);
     return node;
 }
 
@@ -122,7 +124,7 @@ size_t tree_t<T, key_type>::range_query(int l_bound, int u_bound) {
     }
     node_t<T, key_type>* l_node = upper_bound(u_bound);
     node_t<T, key_type>* u_node = lower_bound(l_bound);
-    ASSERT(l_node != nullptr && u_node != nullptr);
+    assert(l_node != nullptr && u_node != nullptr);
 
     // std::cout << "Hereeeee" << node1->key_ <<'\n';
     return distance(l_node, u_node);
@@ -131,7 +133,7 @@ size_t tree_t<T, key_type>::range_query(int l_bound, int u_bound) {
 template<typename T, typename key_type>
 size_t tree_t<T, key_type>::distance(node_t<T, key_type>* l_node,
                                      node_t<T, key_type>* u_node) const {
-    ASSERT(l_node != nullptr && u_node != nullptr);
+    assert(l_node != nullptr && u_node != nullptr);
 
     size_t u_bound_rank = l_node->define_node_rank(root_);
     size_t l_bound_rank = u_node->define_node_rank(root_);

@@ -22,11 +22,11 @@ class node_t {
                                                                    height_(node.height_) {
             if (node.left_ != nullptr) {
                 left_ = new node_t<T, key_type>(*node.left_);
-                ASSERT(left_ != nullptr);
+                assert(left_ != nullptr);
             }
             if (node.right_ != nullptr) {
                 right_ =  new node_t<T, key_type>(*node.right_);
-                ASSERT(right_ != nullptr);
+                assert(right_ != nullptr);
             }
         }
         node_t(node_t<T>&& node) noexcept: key_(node.key_),      data_(node.data_),
@@ -92,8 +92,9 @@ node_t<T, key_type>& node_t<T, key_type>::operator= (const node_t<T, key_type>& 
     key_ = node.key_;
     height_ = node.height_;
     data_ = node.data_;
-    left_ = new node_t<T> (*(node.left_));
-    left_ = new node_t<T> (*(node.right_));
+    left_  = new node_t<T> (*(node.left_));
+    right_ = new node_t<T> (*(node.right_));
+    assert(left_ != nullptr && right_ != nullptr);
     return *this;
 }
 
@@ -129,6 +130,7 @@ node_t<T, key_type>* node_t<T, key_type>::insert(avl::node_t<T, key_type>* cur_n
         }
         else {
             right_ = new node_t<T> (key, data);
+            assert(right_ != nullptr);
         }
         right_->parent_ = this;
     }
@@ -138,6 +140,7 @@ node_t<T, key_type>* node_t<T, key_type>::insert(avl::node_t<T, key_type>* cur_n
         }
         else {
             left_ = new node_t<T> (key, data);
+            assert(left_ != nullptr);
         }
         left_->parent_ = this;
     }

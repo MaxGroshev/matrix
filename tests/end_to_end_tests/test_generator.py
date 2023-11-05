@@ -18,7 +18,7 @@ def print_test_data(args, test_data):
                 dat_file.write("\n")
     dat_file.write("q %d %d "%  (args.lub[0], args.lub[1]))
     for (key) in (test_data.keys()):
-        dat_file.write(": (%d) "%  key)
+        dat_file.write(": (%d) %d "%  (key, args.num))
 
     dat_file.close()
 

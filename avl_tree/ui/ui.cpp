@@ -22,7 +22,7 @@ std::vector<size_t> run_tree(std::istream & in_strm) {
             in_strm >> l_bound >> u_bound;
 
             auto tree_start_time = chrono_cur_time ();
-            result.push_back(pine.range_query(l_bound, u_bound));
+            std::cout << pine.range_query(l_bound, u_bound);
             auto tree_end_time = chrono_cur_time ();
             std::cerr << "Run time: " <<
                                     (tree_end_time - tree_start_time) / 0.1ms  << '\n';
@@ -51,7 +51,7 @@ void run_set(std::istream & in_strm) {
             in_strm >> l_bound >> u_bound;
 
             auto set_start_time = chrono_cur_time ();
-            std::cout << "Set res: " << range_query(enemy_set, l_bound, u_bound) << '\n';
+            std::cerr << "Set res: "; std::cout << range_query(enemy_set, l_bound, u_bound) << '\n';
             auto set_end_time = chrono_cur_time ();
             std::cerr << "Set run time: " <<
                                         (set_end_time - set_start_time) / 0.1ms  << '\n';
@@ -79,13 +79,13 @@ void run_set_and_tree(std::istream & in_strm) {
             in_strm >> l_bound >> u_bound;
 
             auto tree_start_time = chrono_cur_time ();
-            std::cout << "AVL tree res: " << pine.range_query(l_bound, u_bound) << "\n";
+            std::cerr << "AVL tree res: "; std::cout << pine.range_query(l_bound, u_bound) << "\n";
             auto tree_end_time = chrono_cur_time ();
             std::cerr << "AVL tree run time: " <<
                                     (tree_end_time - tree_start_time) / 0.1ms  << '\n';
 
             auto set_start_time = chrono_cur_time ();
-            std::cout << "Set res" << range_query(enemy_set, l_bound, u_bound);
+            std::cerr << "Set res:"; std::cout << range_query(enemy_set, l_bound, u_bound);
             auto set_end_time = chrono_cur_time ();
             std::cerr << "Set Run time: " <<
                                      (set_end_time - set_start_time) / 0.1ms  << '\n';
