@@ -34,7 +34,7 @@ ax.set_xlabel ("Num of elements, n",    size = 20)
 
 #--------------------------------------SET_BUILDING_AREA_SET----------------------------------------------------------
 
-ax.set_title ("\n".join(wrap('Pic. 2.Comparison of efficiency of distance function', 60)), loc = 'center', size = 30)
+ax.set_title ("\n".join(wrap('Pic. 1.Comparison of efficiency of distance function on small dataset', 60)), loc = 'center', size = 30)
 
 ax.grid(which = 'major', color = 'gray')
 ax.grid(which = 'minor', color = 'gray', linestyle = ':')
