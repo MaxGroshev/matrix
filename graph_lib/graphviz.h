@@ -58,6 +58,7 @@ struct dump_graph_t
         graphviz_strm << "rankdir = \"" << orientation << "\"\n";
         graphviz_strm << "splines = \"" << splines << "\"\n\n";
     }
+
     inline void run_graphviz (const char* dot_dir, const char* pic_dir);
 };
 

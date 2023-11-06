@@ -41,7 +41,7 @@ void run_set(std::istream & in_strm) {
     int l_bound = 0;
     int u_bound = 0;
 
-    while(!in_strm.eof()) { //^D to exit from cin input
+    while(!in_strm.eof()) {
         in_strm >> type_of_data;
         if (type_of_data == 'k') {
             in_strm >> data;

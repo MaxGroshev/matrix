@@ -10,11 +10,11 @@ num_of_elems  = []
 avl_tree_time = []
 set_time      = []
 
-with open('data.txt') as file:
+with open('start_data.txt') as file:
     for line in file:
         whole_data.append([float(x) for x in line.split()])
 
-for x in  (whole_data):
+for x in (whole_data):
     num_of_elems.append(x[0])
     avl_tree_time.append(x[1])
     set_time.append(x[2])
@@ -29,7 +29,7 @@ ax.axis([0, max(num_of_elems) + max(num_of_elems)* 0.1, 0, max(set_time) + max(s
 
 
 #Set name of axis
-ax.set_ylabel ("Run time, t (c * 10^(-4))", size = 20)
+ax.set_ylabel ("Run time, t (c * $10^{-4}$)", size = 20)
 ax.set_xlabel ("Num of elements, n",    size = 20)
 
 #--------------------------------------SET_BUILDING_AREA_SET----------------------------------------------------------
@@ -40,8 +40,9 @@ ax.grid(which = 'major', color = 'gray')
 ax.grid(which = 'minor', color = 'gray', linestyle = ':')
 ax.minorticks_on ()
 
-ax.plot(num_of_elems, avl_tree_time, color = '#21421E', linewidth = 3, label = 'AVL tree t(n)', marker = 'D', markevery = 20, mfc = '#21421E')
-ax.plot(num_of_elems, set_time, color = '#E32636', linewidth = 3, label = 'Set t(n)', marker = 'D', markevery = 20, mfc = '#E32636')
+
+ax.plot(num_of_elems, avl_tree_time, color = '#21421E', linewidth = 3, label = 'AVL tree t(n)', marker = 'D', markevery = 0.005, mfc = '#21421E')
+ax.plot(num_of_elems, set_time, color = '#E32636', linewidth = 3, label = 'Set t(n)', marker = 'D', markevery = 0.05, mfc = '#E32636')
 
 
 #Set legend
@@ -49,5 +50,5 @@ ax.legend(shadow = False, loc = 'upper right', fontsize = 20)
 
 #--------------------------------------SAVING_OF_GRAPH------------------------------------------------------------
 
-fig.savefig('graph.png')
+fig.savefig('start_graph.png')
 
