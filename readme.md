@@ -60,6 +60,20 @@ Required programs:
 ---
 
 # Performance
+- insert, search runs during O(log(n))
 
-Required programs:
+<p align="center">
+  <img width="600" height="520" src="https://github.com/MaxGroshev/avl_tree/blob/master/efficiency_comp/tree_d1.png">
+</p>
 
+## Efficiency comparison with std:set
+
+<p align="center">
+  <img width="600" height="400" src="https://github.com/MaxGroshev/avl_tree/blob/master/efficiency_comp/start_graph.png">
+</p>
+
+<p align="center">
+  <img width="600" height="400" src="https://github.com/MaxGroshev/avl_tree/blob/master/efficiency_comp/graph.png">
+</p>
+
+---
