@@ -144,12 +144,14 @@ size_t tree_t<T, key_type>::distance(node_t<T, key_type>* l_node,
 
 template<typename T, typename key_type>
 void tree_t<T, key_type>::inorder_walk() const {
+    if (root_ == nullptr) return;
     root_->inorder_walk();
     std::cout << "\n";
 }
 
 template<typename T, typename key_type>
 void tree_t<T, key_type>::store_inorder_walk(std::vector<T>* storage) const {
+    if (root_ == nullptr) return;
     root_->store_inorder_walk(storage);
     std::cout << "\n";
 }

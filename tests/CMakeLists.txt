@@ -22,7 +22,8 @@ set (E2E_TESTS
 #-----------------------------------------------------------------------------------------
 
 add_executable            (unit_tests ${UNIT_TESTS} ${HEADERS} ${DEBUG_UTILS})
-target_include_directories(unit_tests PRIVATE${GTEST_INCLUDE_DIRS})
+target_include_directories(unit_tests PRIVATE${GTEST_INCLUDE_DIRS}
+                                      ../avl_tree/include/)
 target_link_libraries     (unit_tests ${GTEST_BOTH_LIBRARIES} graphviz debug_utils)
 
 # enable_testing()
