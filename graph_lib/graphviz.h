@@ -59,7 +59,10 @@ struct dump_graph_t
         graphviz_strm << "splines = \"" << splines << "\"\n\n";
     }
 
-    inline void run_graphviz (const char* dot_dir, const char* pic_dir);
+    inline void close_input() {
+        graphviz_strm << "}\n";
+        graphviz_strm.close();
+    };
 };
 
 //-----------------------------------------------------------------------------------------

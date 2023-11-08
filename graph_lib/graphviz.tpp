@@ -25,16 +25,4 @@ void edge_t::print_edge (const T* node_from, const T* node_to, std::ofstream& gr
 }
 
 //-----------------------------------------------------------------------------------------
-
-void dump_graph_t::run_graphviz(const char* dot_dir, const char* pic_dir) {
-    assert (dot_dir != nullptr && pic_dir != nullptr);
-    graphviz_strm << "}\n";
-
-    static int num_of_print = 0;
-    num_of_print++;
-    std::string command = "dot " + std::string(dot_dir) + " -T png -o " + pic_dir + "/tree_d"
-                                 + std::to_string(num_of_print) + ".png";
-    graphviz_strm.close();
-    system (command.c_str());
-}
 }

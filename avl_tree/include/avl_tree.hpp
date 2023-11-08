@@ -117,8 +117,7 @@ node_t<T, key_type>* tree_t<T, key_type>::lower_bound(key_type key) const {
 template<typename T, typename key_type>
 size_t tree_t<T, key_type>::range_query(int l_bound, int u_bound) const {
 
-    if (l_bound > u_bound) {
-        // std::cout << "Incorrect input\n";
+    if (l_bound > u_bound || root_ == nullptr) {
         return 0;
     }
     node_t<T, key_type>* l_node = upper_bound(u_bound);
@@ -128,7 +127,6 @@ size_t tree_t<T, key_type>::range_query(int l_bound, int u_bound) const {
     if (u_node->key_ > u_bound || l_node->key_ < l_bound) { //corner_case
         return 0;
     }
-    // std::cout << "Hereeeee" << node1->key_ <<'\n';
     return distance(l_node, u_node);
 }
 
@@ -161,10 +159,11 @@ void tree_t<T, key_type>::store_inorder_walk(std::vector<T>* storage) const {
 
 template<typename T, typename key_type>
 void tree_t<T, key_type>::graphviz_dump() const {
-
     graphviz::dump_graph_t tree_dump("../graph_lib/tree_dump.dot"); //make boost::program_options
-    root_->graphviz_dump(tree_dump);
-    tree_dump.run_graphviz("../graph_lib/tree_dump.dot", "../graph_lib");
-}
 
+    // graphviz::dump_graph_t tree_dump(graphviz_strm); //make boost::program_options
+    root_->graphviz_dump(tree_dump);
+    tree_dump.close_input();
+    // close_input()
+}
 }
