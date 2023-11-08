@@ -15,7 +15,7 @@ namespace avl_tree_ui {
 
 using namespace time_control;
 
-std::vector<size_t> run_tree(std::istream & in_strm = std::cin);
+void run_tree(std::istream & in_strm = std::cin);
 void run_set_and_tree(std::istream & in_strm = std::cin);
 void run_set(std::istream & in_strm);
 

@@ -4,7 +4,7 @@
 
 namespace avl_tree_ui {
 
-std::vector<size_t> run_tree(std::istream & in_strm) {
+void run_tree(std::istream & in_strm) {
     avl::tree_t<int, int> pine;
     char type_of_data = '\0';
     int data    = 0;
@@ -22,16 +22,14 @@ std::vector<size_t> run_tree(std::istream & in_strm) {
             in_strm >> l_bound >> u_bound;
 
             // auto tree_start_time = chrono_cur_time ();
-            std::cout << pine.range_query(l_bound, u_bound);
+            std::cout << pine.range_query(l_bound, u_bound) << ' ';
             // auto tree_end_time = chrono_cur_time ();
             // std::cerr << "Run time: " <<
-            //                         (tree_end_time - tree_start_time) / 0.1ms  << '\n';
+            // (tree_end_time - tree_start_time) / 0.1ms  << '\n';
         }
         type_of_data = '\0';
     }
     // pine.graphviz_dump();
-
-    return result;
 }
 
 void run_set(std::istream & in_strm) {

@@ -118,8 +118,8 @@ template<typename T, typename key_type>
 size_t tree_t<T, key_type>::range_query(int l_bound, int u_bound) const {
 
     if (l_bound > u_bound) {
-        std::cout << "Incorrect input\n";
-        return -1;
+        // std::cout << "Incorrect input\n";
+        return 0;
     }
     node_t<T, key_type>* l_node = upper_bound(u_bound);
     node_t<T, key_type>* u_node = lower_bound(l_bound);
