@@ -161,9 +161,7 @@ template<typename T, typename key_type>
 void tree_t<T, key_type>::graphviz_dump() const {
     graphviz::dump_graph_t tree_dump("../graph_lib/tree_dump.dot"); //make boost::program_options
 
-    // graphviz::dump_graph_t tree_dump(graphviz_strm); //make boost::program_options
     root_->graphviz_dump(tree_dump);
     tree_dump.close_input();
-    // close_input()
 }
 }
