@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 
 #-----------------------------------------------------------------------------------------
 
-project(avl_tree)
+project(matrix)
 
 #-----------------------------------------------------------------------------------------
 
@@ -10,7 +10,7 @@ set(TESTING_ENABLED ON CACHE BOOL [FORCE])
 
 #-----------------------------------------------------------------------------------------
 
-set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Debug")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS  -fsanitize=address,leak)
@@ -20,9 +20,8 @@ endif ()
 
 #-----------------------------------------------------------------------------------------
 
-add_subdirectory(graph_lib/)
 add_subdirectory(debug_utils/) #make compile only in debug mode
-add_subdirectory(avl_tree/)
+add_subdirectory(matrix/)
 
 if (TESTING_ENABLED)
     add_subdirectory(./tests/)

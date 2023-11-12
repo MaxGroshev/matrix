@@ -7,12 +7,11 @@
 #include <vector>
 #include <gtest/gtest.h>
 
-#include "graphviz.h"
-#include "avl_tree.hpp"
+#include "matrix_oper.hpp"
 #include "debug_utils.hpp"
 
-#include "big_five_tests.hpp"
-#include "rotate_tests.hpp"
-#include "range_tests.hpp"
+#include "matrix_op_test.hpp"
+#include "matrix_meth_test.hpp"
+#include "matrix_big_five_test.hpp"
 
 //-----------------------------------------------------------------------------------------
