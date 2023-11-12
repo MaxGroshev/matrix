@@ -9,53 +9,73 @@ import sys
 def print_test_data(args, test_data):
     dat_file = open(args.file, "w")
 
-    num_of_elem = 1
-    for (val) in (test_data.values()) :
-        for i in val:
-            num_of_elem += 1
-            dat_file.write("k %d "%  i)
-            if (not(num_of_elem % 10)):
-                dat_file.write("\n")
-    dat_file.write("q %d %d "%  (args.lub[0], args.lub[1]))
-    for (key) in (test_data.keys()):
-        dat_file.write(": (%d) %d "%  (key, args.num))
+    dat_file.write("%d\n\n"%  args.size)
+    for (data) in (test_data.values()) :
+        for i in range(len(data)):
+            for j in range(len(data[i])):
+                dat_file.write("%d "%  data[i][j])
+            dat_file.write("\n")
+    for (det) in (test_data.keys()):
+        dat_file.write("\n(%d)"%  (det))
 
     dat_file.close()
 
 
 def generate_test_data(args):
-    rand_list = []
-    my_set = set(rand_list)
+    diag_matrix     = []
+    diag_matrix_set = set(diag_matrix)
+    allowed_values = list(range(args.diaposon[0], args.diaposon[1]))
+    allowed_values.remove(0)
 
-    while (len(my_set) != args.num):
-        val = random.randint(args.vd[0], args.vd[1])
-        if val not in my_set:
-            my_set.add(val)
-            rand_list.append(val)
-            continue
+    for i in range(args.size):
+        row = []
+        for j in range(args.size):
+            if (j < i):
+                row.append(0)
+            else:
+                row.append(random.choice(allowed_values))
+        diag_matrix.append(row)
 
-    res = 0
-    my_list = list(my_set)
-    for elem in my_list:
-        if (elem >= args.lub[0] and elem <= args.lub[1]):
-            res += 1
+    print(diag_matrix)
 
-    test_data = {res : rand_list}
+    det = calculate_diag_matrix_det(diag_matrix)
+    det, rondomized_matrix = randomize_matrix(args, diag_matrix, det)
+
+    print (rondomized_matrix)
+
+    test_data = {det : rondomized_matrix}
     return test_data
+
+def calculate_diag_matrix_det(diag_matrix):
+    det = 1
+    for i in range(args.size):
+        det *= diag_matrix[i][i]
+    return det
+
+def randomize_matrix(args, diag_matrix, det):
+    allowed_values = list(range(0, args.size - 1))
+
+    i = 0
+    while (i < len(allowed_values)):
+        rand_row1 = random.choice(allowed_values)
+        rand_row2 = random.choice(allowed_values)
+        if (rand_row2 != rand_row1):
+            det *= -1
+        tmp = diag_matrix[rand_row1]
+        diag_matrix[rand_row1] = diag_matrix[rand_row2]
+        diag_matrix[rand_row2] = tmp
+        i += 2
+
+    return det, diag_matrix
+
 
 # -----------------------------------------------------------------------------------------
 
 def add_parse_arguments(parser):
-    parser.add_argument("-n", "--num", type = int, default = 0)
-    parser.add_argument('-vd', nargs = 2, type = int, default = [0, 0])
-    parser.add_argument('-f', '--file', type = str, default = os.path.dirname(os.path.abspath(__file__)) +
-                                                              '/my_test_dat/gen_test.dat')
-    parser.add_argument('-lub', nargs = 2, type = int, default = [0, 0])
-
-def check_args(args):
-    if (args.vd[0] >= args.vd[1] or args.lub[0] >= args.lub[1] or args.num > args.vd[1] - args.vd[0]):
-        print("ERROR")
-        exit()
+    parser.add_argument("-s", "--size",     type = int, default = 10)
+    parser.add_argument('-d', "--diaposon",nargs = 2, type = int, default = [-3, 3])
+    parser.add_argument('-f', '--file',     type = str, default =
+                    os.path.dirname(os.path.abspath(__file__)) + '/my_test_data/gen_test.dat')
 
 # -----------------------------------------------------------------------------------------
 
@@ -63,7 +83,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     add_parse_arguments(parser)
     args = parser.parse_args()
-    check_args(args)
+    # check_args(args)
 
     test_data = generate_test_data(args)
     print_test_data(args, test_data)

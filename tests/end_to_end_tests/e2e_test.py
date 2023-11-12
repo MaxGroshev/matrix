@@ -22,8 +22,8 @@ class TERMINAL_COLORS:
         BOLD      = '\033[1m'
         UNDERLINE = '\033[4m'
 
-test_dir = os.path.dirname(os.path.abspath(__file__)) + "/my_test_dat/"
-total_num_of_tests = 20
+test_dir = os.path.dirname(os.path.abspath(__file__)) + "/my_test_data/"
+total_num_of_tests = 8
 data_files_names = []
 
 # -----------------------------------------------------------------------------------------
@@ -120,4 +120,4 @@ def run_test_data(name_of_testing_prog):
 
 if __name__ == "__main__":
     init_test_files()
-    run_test_data("./build/avl_tree/avl_tree")
+    run_test_data("./build/matrix/matrix")

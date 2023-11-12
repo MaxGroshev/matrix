@@ -54,7 +54,6 @@ class sq_matrix_t final {
         }
     }
     sq_matrix_t(const sq_matrix_t<T>& other) : size_(other.size_) {
-
         for (int i = 0; i < other.size_; i++) {
             std::vector<T> row_data;
             for (int j = 0; j < other.size_; j++) {
@@ -141,6 +140,8 @@ sq_matrix_t<T>& sq_matrix_t<T>::negate() & { //for square matrix
 
 template<typename T>
 T sq_matrix_t<T>::find_det() const { //Barreis algorithm
+    if (size_ == 0) return 0;
+
     int det_sign = 1;
     sq_matrix_t<T> matrix(*this);
 
