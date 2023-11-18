@@ -40,14 +40,10 @@ def generate_test_data(args):
 
     np_matrix  = np.array(diag_matrix)
     print (np.linalg.det(np_matrix), '\n')
-    # print(np_matrix)
     rand_matrix = randomize_matrix(args, np_matrix)
-    # print (rand_matrix)
-    # print (np.linalg.det(rand_matrix), '\n')
-    rand_matrix = np.transpose(rand_matrix)
-    # print (np.linalg.det(rand_matrix), '\n')
-    rand_matrix = randomize_matrix(args, rand_matrix)
-    # print (np.linalg.det(rand_matrix), '\n')
+    if (args.transpose):
+        rand_matrix = np.transpose(rand_matrix)
+        rand_matrix = randomize_matrix(args, rand_matrix)
 
     return rand_matrix
 
@@ -75,10 +71,11 @@ def randomize_matrix(args, np_matrix):
 # -----------------------------------------------------------------------------------------
 
 def add_parse_arguments(parser):
-    parser.add_argument("-s",  "--size",    type = int, default = 10)
+    parser.add_argument("-s",  "--size",        type = int, default = 10)
     parser.add_argument('-det',"--determinant", type = int, default = 50)
-    parser.add_argument('-d',  "--diaposon",nargs = 2, type = int, default = [-10, 10])
-    parser.add_argument('-f',  '--file',    type = str, default =
+    parser.add_argument('-d',  "--diaposon",    nargs = 2, type = int, default = [-10, 10])
+    parser.add_argument('-t',  "--transpose",   type = bool, default = 0)
+    parser.add_argument('-f',  '--file',        type = str, default =
                     os.path.dirname(os.path.abspath(__file__)) + '/my_test_data/gen_test.dat')
 
 # -----------------------------------------------------------------------------------------
