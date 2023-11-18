@@ -1,4 +1,4 @@
-# triangles
+# Matrixes
 - This program helps to do basic operations with matrixes
 
 ## Required programs:
@@ -26,7 +26,6 @@ Required programs:
 
 #### How to run unit tests?
 ```
-> make tests
 > ./tests/unit_tests
 ```
 ---
@@ -41,7 +40,7 @@ Run this command from top project directory
 
 # Test generator
 Required programs:
-
+python
 ```
 > python3 ./tests/end_to_end_tests/test_generator.py
 
