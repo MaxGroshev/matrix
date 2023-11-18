@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <memory>
 #include <cassert>
@@ -15,6 +16,11 @@ struct row_t final {
 
 
     row_t(std::vector<T> data) : data_(data) {};
+    void print(std::ostream & out_strm = std::cout) const {
+        for (const auto& elem : data_) {
+            out_strm << "[" << elem << "]";
+        }
+    };
 };
 
 //-----------------------------------------------------------------------------------------

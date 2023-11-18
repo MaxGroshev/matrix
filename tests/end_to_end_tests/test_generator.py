@@ -1,6 +1,7 @@
 import subprocess
 import argparse
 import random
+import numpy as np
 import os
 import sys
 
@@ -10,41 +11,45 @@ def print_test_data(args, test_data):
     dat_file = open(args.file, "w")
 
     dat_file.write("%d\n\n"%  args.size)
-    for (data) in (test_data.values()) :
-        for i in range(len(data)):
-            for j in range(len(data[i])):
-                dat_file.write("%d "%  data[i][j])
-            dat_file.write("\n")
-    for (det) in (test_data.keys()):
-        dat_file.write("\n(%d)"%  (det))
+    for i in range(len(test_data)):
+        for j in range(len(test_data[i])):
+            dat_file.write("%d "%  test_data[i][j])
+        dat_file.write("\n")
+    dat_file.write("\n(%d)"%  (args.determinant))
 
     dat_file.close()
 
 
 def generate_test_data(args):
     diag_matrix     = []
-    diag_matrix_set = set(diag_matrix)
     allowed_values = list(range(args.diaposon[0], args.diaposon[1]))
     allowed_values.remove(0)
 
     for i in range(args.size):
         row = []
         for j in range(args.size):
-            if (j < i):
+            if (i == 0 and j == 0):
+                row.append(args.determinant)
+            elif (j < i):
                 row.append(0)
+            elif (i == j):
+                row.append(1)
             else:
                 row.append(random.choice(allowed_values))
         diag_matrix.append(row)
 
-    print(diag_matrix)
+    np_matrix  = np.array(diag_matrix)
+    print (np.linalg.det(np_matrix), '\n')
+    # print(np_matrix)
+    rand_matrix = randomize_matrix(args, np_matrix)
+    # print (rand_matrix)
+    # print (np.linalg.det(rand_matrix), '\n')
+    rand_matrix = np.transpose(rand_matrix)
+    # print (np.linalg.det(rand_matrix), '\n')
+    rand_matrix = randomize_matrix(args, rand_matrix)
+    # print (np.linalg.det(rand_matrix), '\n')
 
-    det = calculate_diag_matrix_det(diag_matrix)
-    det, rondomized_matrix = randomize_matrix(args, diag_matrix, det)
-
-    print (rondomized_matrix)
-
-    test_data = {det : rondomized_matrix}
-    return test_data
+    return rand_matrix
 
 def calculate_diag_matrix_det(diag_matrix):
     det = 1
@@ -52,29 +57,28 @@ def calculate_diag_matrix_det(diag_matrix):
         det *= diag_matrix[i][i]
     return det
 
-def randomize_matrix(args, diag_matrix, det):
-    allowed_values = list(range(0, args.size - 1))
+def randomize_matrix(args, np_matrix):
+    allowed_values = list(range(0, args.size))
 
     i = 0
-    while (i < len(allowed_values)):
+    while (i < len(allowed_values) * 10):
         rand_row1 = random.choice(allowed_values)
         rand_row2 = random.choice(allowed_values)
-        if (rand_row2 != rand_row1):
-            det *= -1
-        tmp = diag_matrix[rand_row1]
-        diag_matrix[rand_row1] = diag_matrix[rand_row2]
-        diag_matrix[rand_row2] = tmp
+        if (rand_row2 == rand_row1):
+            continue
+        np_matrix[[rand_row2, rand_row1]] = np_matrix[[rand_row1, rand_row2]]
         i += 2
 
-    return det, diag_matrix
+    return np_matrix
 
 
 # -----------------------------------------------------------------------------------------
 
 def add_parse_arguments(parser):
-    parser.add_argument("-s", "--size",     type = int, default = 10)
-    parser.add_argument('-d', "--diaposon",nargs = 2, type = int, default = [-3, 3])
-    parser.add_argument('-f', '--file',     type = str, default =
+    parser.add_argument("-s",  "--size",    type = int, default = 10)
+    parser.add_argument('-det',"--determinant", type = int, default = 50)
+    parser.add_argument('-d',  "--diaposon",nargs = 2, type = int, default = [-10, 10])
+    parser.add_argument('-f',  '--file',    type = str, default =
                     os.path.dirname(os.path.abspath(__file__)) + '/my_test_data/gen_test.dat')
 
 # -----------------------------------------------------------------------------------------

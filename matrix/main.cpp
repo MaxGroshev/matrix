@@ -7,7 +7,7 @@ using namespace matrix_ui;
 int main() {
 
     auto tree_start_time = time_control::chrono_cur_time ();
-    long det =  run_find_of_det<long>();
+    double det =  run_find_of_det<double>();
     std::cout << det << '\n';
     auto tree_end_time = time_control::chrono_cur_time ();
 

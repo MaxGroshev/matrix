@@ -23,7 +23,7 @@ class TERMINAL_COLORS:
         UNDERLINE = '\033[4m'
 
 test_dir = os.path.dirname(os.path.abspath(__file__)) + "/my_test_data/"
-total_num_of_tests = 8
+total_num_of_tests = 20
 data_files_names = []
 
 # -----------------------------------------------------------------------------------------

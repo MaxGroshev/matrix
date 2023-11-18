@@ -76,9 +76,10 @@ class sq_matrix_t final {
     inline const proxy_row_t& operator[](const int pos) const;
 
     inline sq_matrix_t& transpose() &;
-    inline sq_matrix_t  transpose () const &;
+    inline sq_matrix_t  transpose() const &;
     inline sq_matrix_t& negate   () &;
     inline T find_det() const;
+    inline void print(std::ostream & out_strm = std::cout) const;
 };
 
 //-----------------------------------------------------------------------------------------
@@ -169,11 +170,24 @@ T sq_matrix_t<T>::find_det() const { //Barreis algorithm
                 }
             }
         }
+        // std::cout << "-------------------------------------";
+        // std::cout << "DET: " << matrix.data_[matrix.size_ - 1][matrix.size_ - 1] << '\n';
     }
 
     return det_sign * matrix.data_[matrix.size_ - 1][matrix.size_ - 1];
 }
 
 //-----------------------------------------------------------------------------------------
+
+template <typename T>
+void sq_matrix_t<T>::print(std::ostream & out_strm) const {
+
+    out_strm << "Print of matrix:\n";
+    for (const auto& proxy_row : data_) {
+        out_strm << "[";
+        proxy_row.row_->print();
+        out_strm << "]\n";
+    }
+}
 
 }
