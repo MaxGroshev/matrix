@@ -22,9 +22,7 @@ T run_find_of_det(std::istream & in_strm = std::cin) {
     auto user_data = get_user_data<T>(in_strm);
 
     matrix::sq_matrix_t<T> my_matrix(user_data.first, user_data.second);
-    // my_matrix.print();
     return my_matrix.find_det();
-    // return 666;
 }
 
 template <typename T>
@@ -47,7 +45,6 @@ std::pair<std::vector<T>, int> get_user_data(std::istream & in_strm) {
             exit(1);
         }
         in_strm >> elem;
-        // std::cout << elem << '\n';
         data.push_back(elem);
     }
 
