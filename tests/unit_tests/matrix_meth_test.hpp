@@ -41,5 +41,24 @@ TEST_F(matrix_meth, find_det) {
     ASSERT_TRUE(matrix3.find_det() == 0);
 }
 
+TEST_F(matrix_meth, swap_rows) {
+
+    matrix1.print();
+    matrix1.swap_rows(0, 1);
+    matrix1.print();
+
+    ASSERT_TRUE(matrix1[0][0] == 5);
+    ASSERT_TRUE(matrix1[0][1] == 11);
+    ASSERT_TRUE(matrix1[0][2] == 20);
+
+    ASSERT_TRUE(matrix1[1][0] == -14);
+    ASSERT_TRUE(matrix1[1][1] == 0);
+    ASSERT_TRUE(matrix1[1][2] == 3);
+
+    ASSERT_TRUE(matrix1[2][0] == 21);
+    ASSERT_TRUE(matrix1[2][1] == 28);
+    ASSERT_TRUE(matrix1[2][2] == 42);
+}
+
 
 

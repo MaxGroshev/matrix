@@ -1,116 +1,142 @@
 #pragma once
-#include "rows.hpp"
+// #include "rows.hpp"
 #include <iostream>
+#include <cassert>
 #include <vector>
 
 //-----------------------------------------------------------------------------------------
 
 namespace matrix {
 
-using namespace row;
+// using namespace row;
 
 template<typename T>
 class sq_matrix_t final {
     private:
-        class proxy_row_t {
-            public:
-                std::unique_ptr<row_t<T>> row_;
-
-                proxy_row_t(std::vector<T>& data) {
-                    row_ = {std::make_unique<row_t<T>>(row_t(data))};
-                }
-                proxy_row_t(std::unique_ptr<row_t<T>>&& row) : row_(std::move(row)){};
-                T& operator[](const int pos) {
-                    if (pos < 0 || pos > row_->data_.size()) {
-                        std::cerr << "Elem is out of row";
-                    }
-                    return row_->data_[pos];
-                }
-                const T& operator[](const int pos) const {
-                    if (pos < 0 || pos > row_->data_.size()) {
-                        std::cerr << "Elem is out of row";
-                    }
-                    return row_->data_[pos];
-                }
-        };
-
+        class proxy_row_t;
     public:
-        std::vector<proxy_row_t> data_;
-        size_t size_;
+        T* data_;
+        int size_;
 
 
     sq_matrix_t(std::vector<T>& data, size_t size) : size_(size) {
-        for (int i = 0; i < size; i++) {
-            std::vector<T> row_data;
-            for (int j = i * size, k = 0; k < size; k++) {
-                row_data.push_back(data[j + k]);
-            }
-            data_.push_back(proxy_row_t(row_data));
+        data_ = new T [size * size];
+        for (int i = 0; i < size * size; i++) {
+            data_[i] = data[i];
+            // std::cout << data_[0].row_->data_[0];
         }
     }
-    sq_matrix_t(std::vector<std::unique_ptr<row_t<T>>>& data, size_t size) : size_(size) {
-        for (int i = 0; i < size; i++) {
-            data_.push_back(proxy_row_t{std::move(data[i])});
-        }
-    }
+    sq_matrix_t(size_t size) : size_(size), data_(new T [size * size]) {}
+    // sq_matrix_t(std::vector<std::unique_ptr<row_t<T>>>& data, size_t size) : size_(size) {
+    //     for (int i = 0; i < size; i++) {
+    //         data_.push_back(row_t{std::move(data_[i])});
+    //     }
+    // }
     sq_matrix_t(const sq_matrix_t<T>& other) : size_(other.size_) {
-        for (int i = 0; i < other.size_; i++) {
-            std::vector<T> row_data;
-            for (int j = 0; j < other.size_; j++) {
-                row_data.push_back(other.data_[i][j]);
-            }
-            data_.push_back(proxy_row_t(row_data));
+        data_ = new T [size_ * size_];
+        for (int i = 0; i < size_ * size_; i++) {
+            // std::vector<T> row_data;
+            data_[i] = other.data_[i];
         }
     }
-    sq_matrix_t(sq_matrix_t<T>&& other) noexcept : size_(other.size_) {
-        for (int i = 0; i < other.data_.size(); i++) {
-            data_.push_back(std::move(other.data_[i]));
+    // sq_matrix_t(sq_matrix_t<T>&& other) noexcept : size_(other.size_) {
+    //     for (int i = 0; i < other.data_.size(); i++) {
+    //         data_.push_back(std::move(other.data_[i]));
+    //     }
+    // }
+    ~sq_matrix_t() {
+        // std::cout << "Hey\n\n\n\n";
+        delete [] data_;
+    }
+
+
+    sq_matrix_t operator=(const sq_matrix_t<T>& other) {
+    };
+    sq_matrix_t operator=(sq_matrix_t<T>&& other) noexcept;
+    proxy_row_t operator[](const int pos) {
+        if (pos < 0 || pos > size_) {
+            std::cerr << "Elem is out of row";
+            // return data_[0];
+        }
+        proxy_row_t ret_row {data_ + (pos * size_), size_};
+        return ret_row;
+    };
+    const proxy_row_t operator[](const int pos) const {
+        if (pos < 0 || pos > size_) {
+            std::cerr << "Elem is out of row";
+            // return data_[0];
+        }
+        proxy_row_t ret_row {data_ + (pos * size_), size_};
+        return ret_row;
+    };
+
+    sq_matrix_t& transpose() &;
+    sq_matrix_t  transpose() const &;
+    sq_matrix_t& negate   () &;
+    T find_det() const;
+    void swap_rows(const int lhs, const int rhs) {
+        for (int i = 0; i < size_; i++) {
+            T tmp = data_[i + lhs * size_];
+            data_[i + lhs * size_] = data_[i + rhs * size_];
+            data_[i + rhs * size_] = tmp;
         }
     }
-    ~sq_matrix_t() = default;
+    void print(std::ostream & out_strm = std::cout) const;
 
 
-    inline sq_matrix_t        operator=(const sq_matrix_t<T>& other);
-    inline sq_matrix_t        operator=(sq_matrix_t<T>&& other) noexcept;
-    inline proxy_row_t&       operator[](const int pos);
-    inline const proxy_row_t& operator[](const int pos) const;
+    private:
+        class proxy_row_t{
+            public:
+                T* row_;
+                int size_ = 0;
+                proxy_row_t (T* row, int size) : row_(row), size_(size) {};
 
-    inline sq_matrix_t& transpose() &;
-    inline sq_matrix_t  transpose() const &;
-    inline sq_matrix_t& negate   () &;
-    inline T find_det() const;
-    inline void print(std::ostream & out_strm = std::cout) const;
+                T& operator[](const int pos) {
+                    if (pos < 0 || pos > size_) {
+                        std::cerr << "Elem is out of row";
+                    }
+                    return row_[pos];
+                }
+                const T& operator[](const int pos) const {
+                    if (pos < 0 || pos > size_) {
+                        std::cerr << "Elem is out of row";
+                    }
+                    return row_[pos];
+                }
+        };
 };
 
 //-----------------------------------------------------------------------------------------
 
-template<typename T>
-typename sq_matrix_t<T>::proxy_row_t& sq_matrix_t<T>::operator[](const int pos) {
-    if (pos < 0 || pos > data_.size()) {
-        std::cerr << "Elem is out of row";
-        return data_[0];
-    }
-    return data_[pos];
-}
+// template<typename T>
+// typename row_t<T>::row_t<T>& sq_matrix_t<T>::operator[](const int pos) {
+//     if (pos < 0 || pos > data_.size()) {
+//         std::cerr << "Elem is out of row";
+//         return data_[0];
+//     }
+//     return data_[pos];
+// }
 
-template<typename T>
-const typename sq_matrix_t<T>::proxy_row_t& sq_matrix_t<T>::operator[](const int pos) const {
-    if (pos < 0 || pos > data_.size()) {
-        std::cerr << "Elem is out of row";
-        return data_[0];
-    }
-    return data_[pos];
-}
+// template<typename T>
+// const typename row_t<T>& sq_matrix_t<T>::operator[](const int pos) const {
+//     if (pos < 0 || pos > data_.size()) {
+//         std::cerr << "Elem is out of row";
+//         return data_[0];
+//     }
+//     return data_[pos];
+// }
 
 //-----------------------------------------------------------------------------------------
 
 template<typename T>
 sq_matrix_t<T>& sq_matrix_t<T>::transpose() & {
+    sq_matrix_t<T>& m = *this;
+    // std::cout << "Transposing\n";
     for (int i = 0; i < size_; i++) {
         for (int j = i; j < size_; j++) {
-            T tmp = data_[i][j];
-            data_[i][j] = data_[j][i];
-            data_[j][i] = tmp;
+            T tmp = m[i][j];
+            m[i][j] = m[j][i];
+            m[j][i] = tmp;
         }
     }
     return *this;
@@ -118,13 +144,11 @@ sq_matrix_t<T>& sq_matrix_t<T>::transpose() & {
 
 template<typename T>
 sq_matrix_t<T> sq_matrix_t<T>::transpose() const & {
-    std::vector<T> data;
-    for (int i = 0; i < size_; i++) {
-        for (int j = 0; j < size_; j++) {
-            data.push_back(data_[j][i]);
-        }
+    sq_matrix_t ret_matrix{size_};
+    for (int i = 0; i < ret_matrix.size_ * ret_matrix.size_; i++) {
+        ret_matrix.data_[i] = data_[i];
     }
-    return sq_matrix_t{data, size_};
+    return ret_matrix;
 }
 
 template<typename T>
@@ -145,13 +169,14 @@ T sq_matrix_t<T>::find_det() const { //Barreis algorithm
 
     int det_sign = 1;
     sq_matrix_t<T> matrix(*this);
-
+    // matrix.transpose();
     for (int i = 0; i < matrix.size_; i++) {
-        if (matrix.data_[i][i] == 0) {
+        if (matrix[i][i] == 0) {
             int j = 0;
             for (j = i + 1; j < matrix.size_; j++) {
-                if (matrix.data_[j][i] != 0) {
-                    std::swap(matrix.data_[i], matrix.data_[j]);
+                if (matrix[j][i] != 0) {
+                    matrix.swap_rows(i, j);
+                    // std::cout << "Geree\n";
                     det_sign *= -1;
                     break;
                 }
@@ -163,10 +188,10 @@ T sq_matrix_t<T>::find_det() const { //Barreis algorithm
 
         for (int k = i + 1; k < matrix.size_; k++) {
             for (int m = i + 1; m < matrix.size_; m++) {
-                matrix.data_[k][m] = matrix.data_[k][m] * matrix.data_[i][i] -
-                                     matrix.data_[k][i] * matrix.data_[i][m];
+                matrix[k][m] = matrix[k][m] * matrix[i][i] -
+                                     matrix[k][i] * matrix[i][m];
                 if (i != 0) {
-                    matrix.data_[k][m] /= matrix.data_[i - 1][i - 1];
+                    matrix[k][m] /= matrix[i - 1][i - 1];
                 }
             }
         }
@@ -174,7 +199,7 @@ T sq_matrix_t<T>::find_det() const { //Barreis algorithm
         // std::cout << "DET: " << matrix.data_[matrix.size_ - 1][matrix.size_ - 1] << '\n';
     }
 
-    return det_sign * matrix.data_[matrix.size_ - 1][matrix.size_ - 1];
+    return det_sign * matrix[matrix.size_ - 1][matrix.size_ - 1];
 }
 
 //-----------------------------------------------------------------------------------------
@@ -183,11 +208,12 @@ template <typename T>
 void sq_matrix_t<T>::print(std::ostream & out_strm) const {
 
     out_strm << "Print of matrix:\n";
-    for (const auto& proxy_row : data_) {
-        out_strm << "[";
-        proxy_row.row_->print();
-        out_strm << "]\n";
+    for (int i = 0; i < size_ * size_; i++) {
+        if (i % size_ == 0)
+            std::cout << '\n';
+        std::cout << "[" << data_[i] << "] ";
     }
+    std::cout << '\n';
 }
 
 }
