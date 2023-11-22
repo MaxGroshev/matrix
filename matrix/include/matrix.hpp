@@ -7,8 +7,6 @@
 
 namespace matrix {
 
-// using namespace row;
-
 template<typename T>
 class sq_matrix_t final {
     private:
@@ -25,25 +23,31 @@ class sq_matrix_t final {
         }
     }
     sq_matrix_t(int size) : size_(size), data_(new T [size * size]) {}
-    // sq_matrix_t(std::vector<std::unique_ptr<row_t<T>>>& data, size_t size) : size_(size) {
-    //     for (int i = 0; i < size; i++) {
-    //         data_.push_back(row_t{std::move(data_[i])});
-    //     }
-    // }
-    sq_matrix_t(const sq_matrix_t<T>& other) : size_(other.size_) {
-        data_ = new T [size_ * size_];
-        for (int i = 0; i < size_ * size_; i++) {
-            // std::vector<T> row_data;
-            data_[i] = other.data_[i];
-        }
+    sq_matrix_t(const sq_matrix_t<T>& other) : size_(other.size_), data_(safe_copy(other)) {};
+    sq_matrix_t(sq_matrix_t<T>&& other) noexcept {
+        delete [] data_;
+        size_ = other.size_;
+        data_ = other.data_;
+
+        other.data_ = nullptr;
     }
-    // sq_matrix_t(sq_matrix_t<T>&& other) noexcept : size_(other.size_) {
-    //     for (int i = 0; i < other.data_.size(); i++) {
-    //         data_.push_back(std::move(other.data_[i]));
-    //     }
-    // }
     ~sq_matrix_t() {
         delete [] data_;
+    }
+    T* safe_copy(const sq_matrix_t& other) {
+        T* tmp_data = new T[other.size_ * other.size_];
+        try {
+            for (int i = 0; i < other.size_; i++) {
+                for (int j = 0; j < other.size_; j++) {
+                    tmp_data[i * other.size_ + j] = other[i][j];
+                }
+            }
+        } catch(...) {
+            std::cout << "Here\n";
+            delete [] tmp_data;
+            throw;
+        }
+        return tmp_data;
     }
 
 
@@ -89,7 +93,7 @@ template<typename T>
 typename sq_matrix_t<T>::proxy_row_t sq_matrix_t<T>::operator[](const int pos) {
     if (pos < 0 || pos > size_) {
             std::cerr << "Elem is out of row";
-            // return data_[0];
+            return (*this)[0];
     }
     proxy_row_t ret_row {data_ + (pos * size_), size_};
     return ret_row;
@@ -99,7 +103,7 @@ template<typename T>
 const typename sq_matrix_t<T>::proxy_row_t sq_matrix_t<T>::operator[](const int pos) const {
     if (pos < 0 || pos > size_) {
         std::cerr << "Elem is out of row";
-        // return data_[0];
+        return (*this)[0];
     }
     proxy_row_t ret_row {data_ + (pos * size_), size_};
     return ret_row;
@@ -135,9 +139,10 @@ sq_matrix_t<T> sq_matrix_t<T>::transpose() const & {
 
 template<typename T>
 sq_matrix_t<T>& sq_matrix_t<T>::negate() & { //for square matrix
+    const sq_matrix_t<T>& m = *this;
     for (int i = 0; i < size_; i++) {
         for (int j = 0; j < size_; j++) {
-            data_[i][j] *= -1;
+            m[i][j] *= -1;
         }
     }
     return *this;

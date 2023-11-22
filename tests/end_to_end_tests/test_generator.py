@@ -23,7 +23,8 @@ def print_test_data(args, test_data):
 def generate_test_data(args):
     diag_matrix     = []
     allowed_values = list(range(args.diaposon[0], args.diaposon[1]))
-    allowed_values.remove(0)
+    if 0 in allowed_values:
+        allowed_values.remove(0)
 
     for i in range(args.size):
         row = []
