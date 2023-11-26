@@ -11,7 +11,7 @@ class matrix_buf_t {
 
         matrix_buf_t(int capacity) :
             capacity_(capacity),
-            data_(static_cast<T*>(::operator new(sizeof(T) * capacity)))
+            data_((capacity != 0) ? static_cast<T*>(::operator new(sizeof(T) * capacity)) : nullptr)
         {};
         matrix_buf_t(const matrix_buf_t<T>& rhs) = delete;
         matrix_buf_t& operator=(const matrix_buf_t<T>& rhs) = delete;
