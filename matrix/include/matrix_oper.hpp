@@ -84,7 +84,7 @@ sq_matrix_t<T> operator*(const T val, const sq_matrix_t<T>& rhs) {
 //-----------------------------------------------------------------------------------------
 
 template<typename T>
-sq_matrix_t<T> sq_matrix_t<T>::operator=(const sq_matrix_t<T>& other) {
+sq_matrix_t<T>& sq_matrix_t<T>::operator=(const sq_matrix_t<T>& other) {
     if (this == &other) {
         return *this;
     }
@@ -93,14 +93,5 @@ sq_matrix_t<T> sq_matrix_t<T>::operator=(const sq_matrix_t<T>& other) {
     delete [] data_;
     data_ = tmp_matrix.data_;
     size_ = tmp_matrix.size_;
-}
-
-template<typename T>
-sq_matrix_t<T> sq_matrix_t<T>::operator=(sq_matrix_t<T>&& other) noexcept {
-    if (this == &other) {
-        return *this;
-    }
-
-    return sq_matrix_t<T>(other);
 }
 }
