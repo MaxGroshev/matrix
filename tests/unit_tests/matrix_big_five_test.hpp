@@ -19,7 +19,7 @@ TEST_F(matrix_big_five, copy_constructor) {
 
     matrix::sq_matrix_t<int> copy_matrix{matrix1};
 
-    ASSERT_TRUE(matrix1.size_ == copy_matrix.size_);
+    ASSERT_TRUE(matrix1.row_size_ == copy_matrix.row_size_);
 
     ASSERT_TRUE(matrix1[0][0] == copy_matrix[0][0]);
     ASSERT_TRUE(matrix1[0][1] == copy_matrix[0][1]);
@@ -38,7 +38,7 @@ TEST_F(matrix_big_five, copy_assignment) {
 
     matrix::sq_matrix_t<int> copy_matrix = matrix1;
 
-    ASSERT_TRUE(matrix1.size_ == copy_matrix.size_);
+    ASSERT_TRUE(matrix1.row_size_ == copy_matrix.row_size_);
 
     ASSERT_TRUE(matrix1[0][0] == copy_matrix[0][0]);
     ASSERT_TRUE(matrix1[0][1] == copy_matrix[0][1]);

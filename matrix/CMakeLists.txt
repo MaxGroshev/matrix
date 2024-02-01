@@ -6,16 +6,22 @@ project(matrix)
 
 #-----------------------------------------------------------------------------------------
 
-set(SOURCE
+set(ORDER
     ./main.cpp)
+
+set(MX_MUL
+    ./compare_mul.cpp)
 
 #-----------------------------------------------------------------------------------------
 
-add_executable(${PROJECT_NAME} ${SOURCE} ${DEBUG_UTILS})
-target_link_libraries(${PROJECT_NAME} debug_utils)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ./ui
-                                                   ./include/)
+add_executable(mx_order ${ORDER} ${DEBUG_UTILS})
+add_executable(mx_mul ${MX_MUL} ${DEBUG_UTILS})
+target_link_libraries(mx_order debug_utils)
+target_link_libraries(mx_mul debug_utils)
+
+target_include_directories(mx_order PRIVATE ./ui ./include/)
+target_include_directories(mx_mul PRIVATE ./ui ./include/)
 
 
 

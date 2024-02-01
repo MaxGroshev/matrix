@@ -9,16 +9,18 @@ class matrix_meth : public ::testing::Test {
         std::vector<int> matrix_data1 = {-14, 0, 3, 5, 11, 20, 21, 28, 42};
         std::vector<int> matrix_data2 = {-14, 0, 3, 5, 0, 20, 21, 28, 42};
         std::vector<int> matrix_data3 = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        std::vector<int> matrix_data4 = {1, 2, 3, 4, 5, 6};
         matrix::sq_matrix_t<int> matrix1{matrix_data1, 3};
         matrix::sq_matrix_t<int> matrix2{matrix_data2, 3};
         matrix::sq_matrix_t<int> matrix3{matrix_data3, 3};
+        matrix::imatrix_t<int> matrix4{matrix_data4, 2, 3};
     void SetUp() {
     }
 };
 
 //-----------------------------------------------------------------------------------------
 
-TEST_F(matrix_meth, transpose_test) {
+TEST_F(matrix_meth, sq_transpose_test) {
 
     matrix1.transpose();
     ASSERT_TRUE(matrix1[0][0] == -14);
@@ -32,6 +34,20 @@ TEST_F(matrix_meth, transpose_test) {
     ASSERT_TRUE(matrix1[2][0] == 3);
     ASSERT_TRUE(matrix1[2][1] == 20);
     ASSERT_TRUE(matrix1[2][2] == 42);
+}
+
+TEST_F(matrix_meth, transpose_test) {
+
+    matrix4.transpose();
+    ASSERT_TRUE(matrix4[0][0] == 1);
+    ASSERT_TRUE(matrix4[0][1] == 4);
+
+    ASSERT_TRUE(matrix4[1][0] == 2);
+    ASSERT_TRUE(matrix4[1][1] == 5);
+
+    ASSERT_TRUE(matrix4[2][0] == 3);
+    ASSERT_TRUE(matrix4[2][1] == 6);
+
 }
 
 TEST_F(matrix_meth, find_det) {

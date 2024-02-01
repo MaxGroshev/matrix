@@ -21,7 +21,7 @@ class matrix_buf_t {
             rhs.capacity_ = 0;
         }
         matrix_buf_t& operator=(matrix_buf_t<T>&& rhs) {
-            if (this = &rhs)
+            if (this == &rhs)
                 return *this;
 
             std::swap(data_, rhs.data_);

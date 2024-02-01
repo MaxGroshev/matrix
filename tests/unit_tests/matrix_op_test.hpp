@@ -9,9 +9,11 @@ class matrix_op : public ::testing::Test {
         std::vector<int> matrix_data1 = {-14, 0, 3, 5, 11, 20, 21, 28, 42};
         std::vector<int> matrix_data2 = {1, 1, 1, 0, 0, 0, -1, -1, -1};
         std::vector<int> matrix_data3 = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        std::vector<int> matrix_data4 = {1, 2, 3, 4, 5, 6};
         matrix::sq_matrix_t<int> matrix1{matrix_data1, 3};
         matrix::sq_matrix_t<int> matrix2{matrix_data2, 3};
         matrix::sq_matrix_t<int> matrix3{matrix_data3, 3};
+        matrix::imatrix_t<int> matrix4{matrix_data4, 3, 2};
 
     void SetUp() {
     }
@@ -36,7 +38,7 @@ TEST_F(matrix_op, brackets_test) {
 
 TEST_F(matrix_op, add_matrix) {
 
-    matrix::sq_matrix_t<int> res_matrix = matrix1 + matrix2;
+    matrix::imatrix_t<int> res_matrix = matrix1 + matrix2;
     ASSERT_TRUE(res_matrix[0][0] == -13);
     ASSERT_TRUE(res_matrix[0][1] == 1);
     ASSERT_TRUE(res_matrix[0][2] == 4);
@@ -52,7 +54,7 @@ TEST_F(matrix_op, add_matrix) {
 
 TEST_F(matrix_op, sub_matrix) {
 
-    matrix::sq_matrix_t<int> res_matrix = matrix1 - matrix2;
+    matrix::imatrix_t<int> res_matrix = matrix1 - matrix2;
     ASSERT_TRUE(res_matrix[0][0] == -15);
     ASSERT_TRUE(res_matrix[0][1] == -1);
     ASSERT_TRUE(res_matrix[0][2] == 2);
@@ -66,9 +68,9 @@ TEST_F(matrix_op, sub_matrix) {
     ASSERT_TRUE(res_matrix[2][2] == 43);
 }
 
-TEST_F(matrix_op, mul_matrix) {
+TEST_F(matrix_op, sq_mul_matrix) {
 
-    matrix::sq_matrix_t<int> res_matrix = matrix1 * matrix3;
+    matrix::imatrix_t<int> res_matrix = matrix1 * matrix3;
     ASSERT_TRUE(res_matrix[0][0] == 7);
     ASSERT_TRUE(res_matrix[0][1] == -4);
     ASSERT_TRUE(res_matrix[0][2] == -15);
@@ -82,9 +84,22 @@ TEST_F(matrix_op, mul_matrix) {
     ASSERT_TRUE(res_matrix[2][2] == 609);
 }
 
+TEST_F(matrix_op, mul_matrix) {
+
+    matrix::imatrix_t<int> res_matrix = matrix3 * matrix4;
+    ASSERT_TRUE(res_matrix[0][0] == 22);
+    ASSERT_TRUE(res_matrix[0][1] == 28);
+
+    ASSERT_TRUE(res_matrix[1][0] == 49);
+    ASSERT_TRUE(res_matrix[1][1] == 64);
+
+    ASSERT_TRUE(res_matrix[2][0] == 76);
+    ASSERT_TRUE(res_matrix[2][1] == 100);
+}
+
 TEST_F(matrix_op, mul_matrix_on_num_1) {
 
-    matrix::sq_matrix_t<int> res_matrix = matrix1 * 2;
+    matrix::imatrix_t<int> res_matrix = matrix1 * 2;
     ASSERT_TRUE(res_matrix[0][0] == -28);
     ASSERT_TRUE(res_matrix[0][1] == 0);
     ASSERT_TRUE(res_matrix[0][2] == 6);
@@ -100,7 +115,7 @@ TEST_F(matrix_op, mul_matrix_on_num_1) {
 
 TEST_F(matrix_op, mul_matrix_on_num_2) {
 
-    matrix::sq_matrix_t<int> res_matrix = 2 * matrix1;
+    matrix::imatrix_t<int> res_matrix = 2 * matrix1;
     ASSERT_TRUE(res_matrix[0][0] == -28);
     ASSERT_TRUE(res_matrix[0][1] == 0);
     ASSERT_TRUE(res_matrix[0][2] == 6);

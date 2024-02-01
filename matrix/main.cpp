@@ -6,15 +6,19 @@ using namespace matrix_ui;
 
 int main() {
 
-    auto tree_start_time = time_control::chrono_cur_time ();
-    double det =  run_find_of_det<double>();
-    std::cout << det << '\n';
-    auto tree_end_time = time_control::chrono_cur_time ();
+
+    auto start_time = time_control::chrono_cur_time ();
+    auto mul_order = run_find_mul_order<int>();
+    auto end_time = time_control::chrono_cur_time ();
 
     std::clog << "----------------------------------------------\n";
-    std::clog << "Total run time: " << (tree_end_time - tree_start_time) / 0.1ms
+    std::clog << "Total run time: " << (end_time - start_time) / 0.1ms
     << " * 10^(-5) sec\n";
+    std::clog << "----------------------------------------------\n";
 
+    for (int i = mul_order.size() - 1; i > -1; i--)
+        std::cout << mul_order[i] << ' ';
+    std::cout << std::endl;
 
     return 0;
 }

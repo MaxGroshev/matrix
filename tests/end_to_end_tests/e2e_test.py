@@ -22,16 +22,38 @@ class TERMINAL_COLORS:
         BOLD      = '\033[1m'
         UNDERLINE = '\033[4m'
 
-test_dir = os.path.dirname(os.path.abspath(__file__)) + "/my_test_data/"
-total_num_of_tests = 20
+test_dir = os.path.dirname(os.path.abspath(__file__)) + "/my_chain_test_dat/"
+test_chain_data = {
+    (test_dir + "0.dat") : [1, 0],
+    (test_dir + "1.dat") : [0, 1, 2, 3],
+    (test_dir + "2.dat") : [2, 3, 0, 1],
+    (test_dir + "3.dat") : [0, 1, 2],
+    (test_dir + "4.dat") : [2, 1, 0],
+    (test_dir + "5.dat") : [6, 7, 8, 4, 3, 2, 1, 0, 5],
+    (test_dir + "6.dat") : [15, 16, 17, 18, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 14],
+    (test_dir + "7.dat") : [3, 4, 5, 1, 0, 2],
+    (test_dir + "8.dat") : [0, 1, 2, 3, 4, 5],
+    (test_dir + "9.dat") : [9, 10, 11, 12, 13, 7, 5, 6, 3, 4, 1, 2, 0, 8],
+}
+
+test_mul_data = {
+    (test_dir + "100.dat") : [1],
+    (test_dir + "101.dat") : [1],
+    (test_dir + "102.dat") : [1],
+    (test_dir + "103.dat") : [1],
+    (test_dir + "104.dat") : [1],
+    (test_dir + "105.dat") : [1],
+    (test_dir + "106.dat") : [1],
+}
+
 data_files_names = []
 
 # -----------------------------------------------------------------------------------------
 
-def check_output_data(n_of_test, stdout_data, correct_res):
-    print('------------------------------')
+def check_output_data(n_of_test, stdout_data, correct_res, name_of_testing_prog):
+    print('\n------------', name_of_testing_prog,'-----------')
     try:
-        if stdout_data[0] == correct_res:
+        if stdout_data == correct_res:
             print(TERMINAL_COLORS.GREEN            + \
                 f"Test {n_of_test} IS PASSED:\n"   + \
                 f"Prog output = {stdout_data}"     + \
@@ -59,17 +81,13 @@ def check_output_data(n_of_test, stdout_data, correct_res):
 def show_total_test_stat(n_of_test, passed_test):
     print('===========TOTAL==============')
     print(TERMINAL_COLORS.OKBLUE                          + \
-            f"Total num of tests = {total_num_of_tests}\n"+ \
+            f"Total num of tests = {n_of_test}\n"+ \
             f"Num of passed      = {passed_test}"         + \
     TERMINAL_COLORS.DEFAULT
     )
     print('==============================')
 
 # -----------------------------------------------------------------------------------------
-
-def init_test_files():
-    for i in range (total_num_of_tests):
-        data_files_names.append(test_dir + str(i) + ".dat")
 
 def parse_test_data(test_case):
     with open(test_case) as dat_file:
@@ -81,43 +99,47 @@ def parse_test_data(test_case):
 
     start = data.find('(')
     end   = data.find(')')
+
     try:
-        correct_res = int(data[start + 1:end])
+        correct_res = data[start + 1:end]
+        data = data[start + 1:end]
     except:
         correct_res = 0
 
-    return correct_res
+    correct_numbers = ''.join(c if c.isdigit() else ' ' for c in correct_res).split()
+    return correct_numbers
 
 # -----------------------------------------------------------------------------------------
 
 def run_test(name_of_testing_prog, test_case):
     dat_file = open(test_case)
-
     pipe = Popen([name_of_testing_prog], stdout = PIPE, stdin = dat_file)
 
     stdout_data = (pipe.communicate())
-    string_data = str(stdout_data[0].decode())
+    string_data = (stdout_data[0].decode())
     conver_output = string_data.split()
+
     conver_output = [int(n) for n in conver_output]
 
     return conver_output
 
 
-def run_test_data(name_of_testing_prog):
+def run_test_data(name_of_testing_prog, test_dat):
     n_of_elems_in_range = 0
 
     passed_test = 0
     n_of_test   = 0
-    for (test_case, n_of_test) in zip(data_files_names, range(len(data_files_names))):
-        correct_res = parse_test_data(test_case)
-        n_of_elems_in_range = run_test(name_of_testing_prog, test_case)
-
-        if (check_output_data(n_of_test + 1, n_of_elems_in_range, correct_res)):
+    # for (test_case, n_of_test) in zip(data_files_names, range(len(data_files_names))):
+    for (test_case, n_of_test) in zip(test_dat, range(len(test_dat))):
+        n_of_trians = run_test(name_of_testing_prog, test_case)
+        if (check_output_data(n_of_test + 1, n_of_trians, test_dat[test_case], name_of_testing_prog)):
             passed_test += 1
     show_total_test_stat(n_of_test, passed_test)
+
 
 # -----------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    init_test_files()
-    run_test_data("./build/matrix/matrix")
+    run_test_data("./build/matrix/mx_order", test_chain_data)
+    run_test_data("./build/matrix/mx_mul", test_mul_data)
+

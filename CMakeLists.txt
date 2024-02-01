@@ -6,14 +6,16 @@ project(matrix)
 
 #-----------------------------------------------------------------------------------------
 
-set(TESTING_ENABLED ON CACHE BOOL [FORCE])
+# set(TESTING_ENABLED ON CACHE BOOL [FORCE])
+# set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #-----------------------------------------------------------------------------------------
 
-set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Debug")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS  -fsanitize=address,leak)
+    set(CMAKE_CXX_FLAGS  -g)
     add_compile_definitions(MY_DEBUG)
     message("Debug_version")
 endif ()

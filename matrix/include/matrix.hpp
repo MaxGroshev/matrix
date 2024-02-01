@@ -1,52 +1,77 @@
 #pragma once
+#include <compare>
 #include <iostream>
 #include <cassert>
 #include <vector>
 #include "matrix_buf.hpp"
+#include "matrix_execeptions.hpp"
 
 //-----------------------------------------------------------------------------------------
 
 namespace matrix {
 
 template<typename T>
-class sq_matrix_t final : private matrix_buf_t<T> {
+class imatrix_t : private matrix_buf_t<T> {
     private:
         class proxy_row_t;
     public:
         using matrix_buf_t<T>::data_;
         using matrix_buf_t<T>::capacity_;
-        int size_;
+        int row_size_; //num of elems in row
+        int column_size_;
 
+    imatrix_t(std::vector<T>& data, int column_size, int row_size) :
+        row_size_(row_size), column_size_(column_size),
+        matrix_buf_t<T>(row_size * column_size) {
 
-    sq_matrix_t(std::vector<T>& data, int size) : size_(size), matrix_buf_t<T>(size*size) {
-        new (data_) T [size * size];
-        for (int i = 0; i < size * size; i++) {
+        new (data_) T [row_size * column_size];
+        for (int i = 0; i < row_size * column_size; i++) {
             data_[i] = data[i];
         }
     }
-    sq_matrix_t(int size) : size_(size), matrix_buf_t<T>(size*size) {};
-    sq_matrix_t(const sq_matrix_t<T>& other) : size_(other.size_),
-                                               matrix_buf_t<T>(other.capacity_) {
+
+    imatrix_t(int column_size, int row_size) :
+        row_size_(row_size),
+        column_size_(column_size),
+        matrix_buf_t<T>(row_size * column_size) {};
+
+    imatrix_t(int column_size, int row_size, T val) :
+        row_size_(row_size),
+        column_size_(column_size),
+        matrix_buf_t<T>(row_size * column_size) {
+        for (int i = 0; i < column_size * row_size; i++) {
+            data_[i] = val;
+        }
+
+        // std::fill(data_, row_size * column_size * sizeof(T) , val);
+    };
+
+    imatrix_t(const imatrix_t<T>& other) : row_size_(other.row_size_),
+                                           column_size_(other.column_size_),
+                                           matrix_buf_t<T>(other.capacity_) {
 
         new (data_) T [other.capacity_];
         for (int i = 0; i < other.capacity_; i++) {
             data_[i] = other.data_[i];
         }
     };
-    sq_matrix_t(sq_matrix_t<T>&& other) = default;
+    imatrix_t(imatrix_t<T>&& other) = default;
 
 
-    sq_matrix_t&      operator=(const sq_matrix_t<T>& other);
-    sq_matrix_t&      operator=(sq_matrix_t<T>&& other) = default;
+    imatrix_t&        operator=(const imatrix_t<T>& other);
+    imatrix_t&        operator=(imatrix_t<T>&& other) = default;
     proxy_row_t       operator[](const int pos);
     const proxy_row_t operator[](const int pos) const;
+    int operator==(const imatrix_t<T>& other) const;
+    int operator!=(const imatrix_t<T>& other) const;
 
-    sq_matrix_t& transpose() &;
-    sq_matrix_t  transpose() const &;
-    sq_matrix_t& negate   () &;
-    T            find_det () const;
-    void         swap_rows(const int lhs, const int rhs);
-    void         print(std::ostream & out_strm = std::cout) const;
+
+    imatrix_t& transpose() &;
+    imatrix_t  transpose() const &;
+    imatrix_t& negate   () &;
+    T          find_det () const;
+    void       swap_rows(const int lhs, const int rhs);
+    void       print(std::ostream & out_strm = std::cout) const;
 
 //-----------------------------------------------------------------------------------------
 
@@ -70,61 +95,76 @@ class sq_matrix_t final : private matrix_buf_t<T> {
         };
 };
 
-//-----------------------------------------------------------------------------------------
-
 template<typename T>
-typename sq_matrix_t<T>::proxy_row_t sq_matrix_t<T>::operator[](const int pos) {
-    if (pos < 0 || pos > size_) {
-        std::cerr << "Elem is out of row";
-        return (*this)[0];
-    }
-    proxy_row_t ret_row {data_ + (pos * size_), size_};
-    return ret_row;
-}
+class sq_matrix_t : public imatrix_t<T> {
+    public:
+        sq_matrix_t(std::vector<T>& data, int size) : imatrix_t<T> {data, size, size} {
 
-template<typename T>
-const typename sq_matrix_t<T>::proxy_row_t sq_matrix_t<T>::operator[](const int pos) const {
-    if (pos < 0 || pos > size_) {
-        std::cerr << "Elem is out of row";
-        return (*this)[0];
-    }
-    proxy_row_t ret_row {data_ + (pos * size_), size_};
-    return ret_row;
-}
+        }
+        sq_matrix_t(int size) : imatrix_t<T> {size, size} {};
+};
 
 //-----------------------------------------------------------------------------------------
 
 template<typename T>
-sq_matrix_t<T>& sq_matrix_t<T>::transpose() & {
-    sq_matrix_t<T>& m = *this;
-    for (int i = 0; i < size_; i++) {
-        for (int j = i; j < size_; j++) {
-            T tmp = m[i][j];
-            m[i][j] = m[j][i];
-            m[j][i] = tmp;
+typename imatrix_t<T>::proxy_row_t imatrix_t<T>::operator[](const int pos) {
+    if (pos < 0 || pos > column_size_) {
+        std::cerr << "Elem is out of row";
+        return (*this)[0];
+    }
+    proxy_row_t ret_row {data_ + (pos * row_size_), row_size_};
+    return ret_row;
+}
+
+template<typename T>
+const typename imatrix_t<T>::proxy_row_t imatrix_t<T>::operator[](const int pos) const {
+    if (pos < 0 || pos > column_size_) {
+        std::cerr << "Elem is out of row";
+        return (*this)[0];
+    }
+    proxy_row_t ret_row {data_ + (pos * row_size_), row_size_};
+    return ret_row;
+}
+
+//-----------------------------------------------------------------------------------------
+
+template<typename T>
+imatrix_t<T>& imatrix_t<T>::transpose() & {
+
+    imatrix_t<T> tmp_m {row_size_, column_size_};
+
+    imatrix_t<T>& m = *this;
+    for (int i = 0; i < column_size_; i++) {
+        for (int j = 0; j < row_size_; j++) {
+            tmp_m[j][i] = m[i][j];
         }
     }
+    data_       = std::move(tmp_m.data_); //does not go to move constr
+    tmp_m.data_ = nullptr;
+    row_size_   = tmp_m.row_size_;
+    column_size_= tmp_m.column_size_;
     return *this;
 }
 
 template<typename T>
-sq_matrix_t<T> sq_matrix_t<T>::transpose() const & {
-    const sq_matrix_t<T>& m = *this;
-    sq_matrix_t ret_matrix{size_};
+imatrix_t<T> imatrix_t<T>::transpose() const & {
+    const imatrix_t<T>& m = *this;
+    imatrix_t ret_matrix{row_size_, column_size_};
 
-    for (int i = 0; i < size_; i++) {
-        for (int j = 0; j < size_; j++) {
+    for (int i = 0; i < column_size_; i++) {
+        for (int j = 0; j < row_size_; j++) {
             ret_matrix[j][i] = m[i][j];
         }
     }
+    // ret_matrix.print();
     return ret_matrix;
 }
 
 template<typename T>
-sq_matrix_t<T>& sq_matrix_t<T>::negate() & { //for square matrix
-    const sq_matrix_t<T>& m = *this;
-    for (int i = 0; i < size_; i++) {
-        for (int j = 0; j < size_; j++) {
+imatrix_t<T>& imatrix_t<T>::negate() & { //for square matrix
+    const imatrix_t<T>& m = *this;
+    for (int i = 0; i < column_size_; i++) {
+        for (int j = 0; j < row_size_; j++) {
             m[i][j] *= -1;
         }
     }
@@ -132,39 +172,41 @@ sq_matrix_t<T>& sq_matrix_t<T>::negate() & { //for square matrix
 }
 
 template<typename T>
-void sq_matrix_t<T>::swap_rows(const int lhs, const int rhs) {
-    for (int i = 0; i < size_; i++) {
-        T tmp = data_[i + lhs * size_];
-        data_[i + lhs * size_] = data_[i + rhs * size_];
-        data_[i + rhs * size_] = tmp;
+void imatrix_t<T>::swap_rows(const int lhs, const int rhs) {
+    for (int i = 0; i < row_size_; i++) {
+        T tmp = data_[i + lhs * row_size_];
+        data_[i + lhs * row_size_] = data_[i + rhs * row_size_];
+        data_[i + rhs * row_size_] = tmp;
     }
 }
 
 //-----------------------------------------------------------------------------------------
 
 template<typename T>
-T sq_matrix_t<T>::find_det() const { //Barreis algorithm
-    if (size_ == 0) return 0;
+T imatrix_t<T>::find_det() const { //Barreis algorithm
+    if (column_size_ != row_size_)
+        throw ("Incorrect size of matrix for determinant");
+    if (row_size_ == 0) return 0;
 
     int det_sign = 1;
-    sq_matrix_t<T> matrix(*this);
-    for (int i = 0; i < matrix.size_; i++) {
+    imatrix_t<T> matrix(*this);
+    for (int i = 0; i < matrix.row_size_; i++) {
         if (matrix[i][i] == 0) {
             int j = 0;
-            for (j = i + 1; j < matrix.size_; j++) {
+            for (j = i + 1; j < matrix.row_size_; j++) {
                 if (matrix[j][i] != 0) {
                     matrix.swap_rows(i, j);
                     det_sign *= -1;
                     break;
                 }
             }
-            if (j == matrix.size_) {
+            if (j == matrix.row_size_) {
                 return 0;
             }
         }
 
-        for (int k = i + 1; k < matrix.size_; k++) {
-            for (int m = i + 1; m < matrix.size_; m++) {
+        for (int k = i + 1; k < matrix.row_size_; k++) {
+            for (int m = i + 1; m < matrix.row_size_; m++) {
                 matrix[k][m] = matrix[k][m] * matrix[i][i] -
                                      matrix[k][i] * matrix[i][m];
                 if (i != 0) {
@@ -174,21 +216,32 @@ T sq_matrix_t<T>::find_det() const { //Barreis algorithm
         }
     }
 
-    return det_sign * matrix[matrix.size_ - 1][matrix.size_ - 1];
+    return det_sign * matrix[matrix.row_size_ - 1][matrix.row_size_ - 1];
 }
 
 //-----------------------------------------------------------------------------------------
 
 template <typename T>
-void sq_matrix_t<T>::print(std::ostream & out_strm) const {
+void imatrix_t<T>::print(std::ostream & out_strm) const {
 
+    out_strm << "------------------------------\n";
     out_strm << "Print of matrix:\n";
-    for (int i = 0; i < size_ * size_; i++) {
-        if (i % size_ == 0)
+    out_strm << "Column_size: " << column_size_ << '\n';
+    out_strm << "Row_size:    " << row_size_;
+
+    for (int i = 0; i < column_size_ * row_size_; i++) {
+        if (i % row_size_ == 0)
             std::cout << '\n';
         std::cout << "[" << data_[i] << "] ";
     }
+    out_strm << "\n------------------------------";
     std::cout << '\n';
 }
+
+// template <typename T = std::pair<int, int>>
+// void imatrix_t<T>::print(std::ostream & out_strm) const {
+//
+//
+// }
 
 }
