@@ -13,9 +13,15 @@
 > cd build
 > cmake ..
 > make
-> ./matrix/matrix
 
 ```
+#### How to find best order for chain multiplication
+
+> ./matrix/mx_order
+
+#### How to mul matrix with best order
+
+> ./matrix/mx_mul
 
 # Tests
 Required programs:
@@ -42,13 +48,11 @@ Run this command from top project directory
 Required programs:
 python
 ```
-> python3 ./tests/end_to_end_tests/test_generator.py
+> python3 ./tests/end_to_end_tests/chain_test_generator.py
 
 ```
- - -s  [--size] sets size of squre matrix of elements in test
- - -det[--deteminant] set determinant of matrix
- - -d  [--diaposon] sets diaposon of elems in matrix
- - -t  [--transpose] additionally transpose and change columns of matrix
+ - -c  [--count] sets count of matrixes
+ - -m[--mode] set mode of generator("o" - generate order; "mxo" - generate order and matrix)
  - -f [--file] sets name of file for data
 
 #### How to run debug mode?
