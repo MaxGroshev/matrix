@@ -26,7 +26,7 @@ class chain_t {
             }
             else if (mx_sizes.back() != matrix.column_size_) {
                 throw mx_exception("Incorrect size of matrix:"
-                                    "Impossible to add in chain\n");
+                                   "Impossible to add in chain\n");
             }
 
             mx_sizes.push_back(matrix.row_size_);

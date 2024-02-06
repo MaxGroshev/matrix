@@ -37,14 +37,15 @@ std::vector<T> run_find_mul_order(std::istream & in_strm = std::cin) {
 
 template <typename T>
 std::pair<std::vector<T>, int> order_get_user_data(std::istream & in_strm) {
-    int mx_size = 0;
-    std::vector<int> data;
-    while(!in_strm.eof()) { //^D to exit from cin input
-        in_strm >> mx_size;
-        if (mx_size != -1)
-            data.push_back(mx_size);
-        mx_size = -1;
+    int num_of_elems = 0;
+    in_strm >> num_of_elems;
 
+    int mx_size = 0;
+
+    std::vector<int> data;
+    for (int i = 0; i < num_of_elems; i++) { //^D to exit from cin input
+        in_strm >> mx_size;
+        data.push_back(mx_size);
     }
     std::pair<std::vector<int>, int> user_data(data, 0);
     return user_data;

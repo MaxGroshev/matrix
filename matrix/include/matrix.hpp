@@ -42,7 +42,6 @@ class imatrix_t : private matrix_buf_t<T> {
         for (int i = 0; i < column_size * row_size; i++) {
             data_[i] = val;
         }
-
         // std::fill(data_, row_size * column_size * sizeof(T) , val);
     };
 
@@ -139,7 +138,7 @@ imatrix_t<T>& imatrix_t<T>::transpose() & {
             tmp_m[j][i] = m[i][j];
         }
     }
-    data_       = std::move(tmp_m.data_); //does not go to move constr
+    data_       = std::move(tmp_m.data_);
     tmp_m.data_ = nullptr;
     row_size_   = tmp_m.row_size_;
     column_size_= tmp_m.column_size_;
@@ -237,11 +236,5 @@ void imatrix_t<T>::print(std::ostream & out_strm) const {
     out_strm << "\n------------------------------";
     std::cout << '\n';
 }
-
-// template <typename T = std::pair<int, int>>
-// void imatrix_t<T>::print(std::ostream & out_strm) const {
-//
-//
-// }
 
 }
