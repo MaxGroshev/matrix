@@ -118,8 +118,8 @@ void chain_t<T>::find_best_order(const imatrix_t<std::pair<int, int>>& cache, in
 
     int k_iter =  cache[i][j].second;
     mul_order.push_back(k_iter - 1);
-    find_best_order(cache, i, k_iter);
     find_best_order(cache, k_iter + 1, j);
+    find_best_order(cache, i, k_iter);
 }
 
 template<typename T>

@@ -26,14 +26,14 @@ test_dir = os.path.dirname(os.path.abspath(__file__)) + "/my_chain_test_dat/"
 test_chain_data = {
     (test_dir + "0.dat") : [1, 0],
     (test_dir + "1.dat") : [0, 1, 2, 3],
-    (test_dir + "2.dat") : [2, 3, 0, 1],
+    (test_dir + "2.dat") : [0, 2, 3, 1],
     (test_dir + "3.dat") : [0, 1, 2],
     (test_dir + "4.dat") : [2, 1, 0],
-    (test_dir + "5.dat") : [6, 7, 8, 4, 3, 2, 1, 0, 5],
-    (test_dir + "6.dat") : [15, 16, 17, 18, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 14],
-    (test_dir + "7.dat") : [3, 4, 5, 1, 0, 2],
+    (test_dir + "5.dat") : [4, 3, 2, 1, 0, 6, 7, 8, 5],
+    (test_dir + "6.dat") : [13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 15, 16, 17, 18, 14],
+    (test_dir + "7.dat") : [1, 0, 3, 4, 5, 2],
     (test_dir + "8.dat") : [0, 1, 2, 3, 4, 5],
-    (test_dir + "9.dat") : [9, 10, 11, 12, 13, 7, 5, 6, 3, 4, 1, 2, 0, 8],
+    (test_dir + "9.dat") : [1, 3, 5, 7, 6, 4, 2, 0, 9, 10, 11, 12, 13, 8],
 }
 
 test_mul_data = {
