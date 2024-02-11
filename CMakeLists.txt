@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #-----------------------------------------------------------------------------------------
 
-set(CMAKE_BUILD_TYPE "Debug")
+# set(CMAKE_BUILD_TYPE "Debug")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS  -g)
@@ -22,7 +22,7 @@ endif ()
 
 #-----------------------------------------------------------------------------------------
 
-add_subdirectory(debug_utils/) #make compile only in debug mode
+add_subdirectory(debug_utils/)
 add_subdirectory(matrix/)
 
 if (TESTING_ENABLED)

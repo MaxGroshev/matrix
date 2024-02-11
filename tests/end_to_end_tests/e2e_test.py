@@ -51,7 +51,6 @@ data_files_names = []
 # -----------------------------------------------------------------------------------------
 
 def check_output_data(n_of_test, stdout_data, correct_res, name_of_testing_prog):
-    print('\n------------', name_of_testing_prog,'-----------')
     try:
         if stdout_data == correct_res:
             print(TERMINAL_COLORS.GREEN            + \
@@ -59,6 +58,7 @@ def check_output_data(n_of_test, stdout_data, correct_res, name_of_testing_prog)
                 f"Prog output = {stdout_data}"     + \
             TERMINAL_COLORS.DEFAULT
             )
+            print('—————————————————————————END_OF_TEST————————————————————————\n\n')
             return True
         else:
             print(TERMINAL_COLORS.ERROR            + \
@@ -67,6 +67,7 @@ def check_output_data(n_of_test, stdout_data, correct_res, name_of_testing_prog)
                 f"Expected      = {correct_res}"   + \
             TERMINAL_COLORS.DEFAULT
             )
+            print('————————————————————————END_OF_TEST—————————————————————————\n\n')
             return False
     except:
         print(TERMINAL_COLORS.WARNING                   + \
@@ -75,13 +76,13 @@ def check_output_data(n_of_test, stdout_data, correct_res, name_of_testing_prog)
         TERMINAL_COLORS.DEFAULT
         )
         return False
-    print('------------------------------')
+
 
 
 def show_total_test_stat(n_of_test, passed_test):
     print('===========TOTAL==============')
     print(TERMINAL_COLORS.OKBLUE                          + \
-            f"Total num of tests = {n_of_test}\n"+ \
+            f"Total num of tests = {n_of_test + 1}\n"+ \
             f"Num of passed      = {passed_test}"         + \
     TERMINAL_COLORS.DEFAULT
     )
@@ -131,6 +132,7 @@ def run_test_data(name_of_testing_prog, test_dat):
     n_of_test   = 0
     # for (test_case, n_of_test) in zip(data_files_names, range(len(data_files_names))):
     for (test_case, n_of_test) in zip(test_dat, range(len(test_dat))):
+        print('————————————————————————START_OF_TEST———————————————————————')
         n_of_trians = run_test(name_of_testing_prog, test_case)
         if (check_output_data(n_of_test + 1, n_of_trians, test_dat[test_case], name_of_testing_prog)):
             passed_test += 1

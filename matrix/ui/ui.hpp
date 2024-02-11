@@ -16,10 +16,7 @@ namespace matrix_ui {
 using namespace time_control;
 
 template <typename T>
-std::pair<std::vector<T>, int> det_get_user_data(std::istream & in_strm);
-
-template <typename T>
-std::pair<std::vector<T>, int> order_get_user_data(std::istream & in_strm);
+std::vector<T> order_get_user_data(std::istream & in_strm);
 
 template <typename T>
 matrix::imatrix_t<T> get_matrix(int i, int j, std::istream & in_strm);
@@ -30,13 +27,15 @@ template <typename T>
 std::vector<T> run_find_mul_order(std::istream & in_strm = std::cin) {
     auto user_data = order_get_user_data<T>(in_strm);
 
-    matrix::chain_t<matrix::imatrix_t<int>> mx_chain {user_data.first};
+    matrix::chain_t<matrix::imatrix_t<int>> mx_chain {user_data};
     mx_chain.find_mul_order();
     return mx_chain.get_mul_order();
 }
 
 template <typename T>
-std::pair<std::vector<T>, int> order_get_user_data(std::istream & in_strm) {
+std::vector<T> order_get_user_data(std::istream & in_strm) {
+    in_strm.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
     int num_of_elems = 0;
     in_strm >> num_of_elems;
 
@@ -47,15 +46,16 @@ std::pair<std::vector<T>, int> order_get_user_data(std::istream & in_strm) {
         in_strm >> mx_size;
         data.push_back(mx_size);
     }
-    std::pair<std::vector<int>, int> user_data(data, 0);
-    return user_data;
+    return data;
 }
 
 
 //-----------------------------------------------------------------------------------------
+
 template <typename T>
-matrix::chain_t<matrix::imatrix_t<T>>get_mx_data(std::istream & in_strm = std::cin) {
+matrix::chain_t<matrix::imatrix_t<T>>mul_get_user_data(std::istream & in_strm = std::cin) {
     using namespace matrix;
+    in_strm.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
     chain_t<imatrix_t<int>> mx_chain;
     int count_of_mx = 0;
@@ -93,38 +93,18 @@ matrix::imatrix_t<T> get_matrix(int i, int j, std::istream & in_strm) {
 
 template <typename T>
 T run_find_of_det(std::istream & in_strm = std::cin) {
-    auto user_data = det_get_user_data<T>(in_strm);
+    in_strm.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-    matrix::sq_matrix_t<T> my_matrix(user_data.first, user_data.second);
-    return my_matrix.find_det();
+    int mx_size = {};
+    try {
+        in_strm >> mx_size;
+        auto my_matrix = get_matrix<T>(mx_size, mx_size, in_strm);
+        return my_matrix.find_det();
+    } catch (std::ifstream::failure error) {
+        std::cerr << "Error of input: " << error.what() << std::endl;
+    } catch (...) {
+        throw;
+    }
+    return -1;
 }
-
-template <typename T>
-std::pair<std::vector<T>, int> det_get_user_data(std::istream & in_strm) {
-    assert(in_strm.good());
-
-    T elem  = 0;
-    std::vector<T> data;
-    int matrix_size = 0;
-
-    in_strm >> matrix_size;
-    if (matrix_size < 0) {
-        "Wrong input of data\n";
-        exit(1);
-    }
-
-    for (int i = 0; i < matrix_size * matrix_size; i++) {
-        if (in_strm.eof()) {
-            "Wrong input of data\n";
-            exit(1);
-        }
-        in_strm >> elem;
-        data.push_back(elem);
-    }
-
-    std::pair<std::vector<T>, int> user_data(data, matrix_size);
-    return user_data;
 };
-
-};
-

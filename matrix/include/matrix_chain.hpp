@@ -30,7 +30,12 @@ class chain_t {
             }
 
             mx_sizes.push_back(matrix.row_size_);
-            matrixes.push_back(matrix);
+            try {
+                matrixes.push_back(matrix);
+            } catch (...) {
+                mx_sizes.pop_back();
+                throw mx_exception("ERROR of inseting of matrix");
+            }
 
         }
         T top() const {
@@ -50,7 +55,7 @@ class chain_t {
             return mul_order;
         }
 
-        int get_num_of_mul (imatrix_t<std::pair<int, int>>& cache, int i, int j) const;
+        int  get_num_of_mul(imatrix_t<std::pair<int, int>>& cache, int i, int j) const;
         void find_mul_order();
         void find_best_order(const imatrix_t<std::pair<int, int>>& cache, int i, int j);
 };
