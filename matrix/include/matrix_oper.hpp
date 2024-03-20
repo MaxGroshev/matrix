@@ -16,7 +16,6 @@ imatrix_t<T> operator+(const imatrix_t<T>& lhs, const imatrix_t<T>& rhs) {
             res_matrix[i][j] = lhs[i][j] + rhs[i][j];
         }
     }
-
     return res_matrix;
 }
 
@@ -89,11 +88,12 @@ imatrix_t<T>& imatrix_t<T>::operator=(const imatrix_t<T>& other) {
         return *this;
     }
 
-    imatrix_t<T> tmp_matrix = imatrix_t<T>(other);
-    delete [] data_;
-    data_ = tmp_matrix.data_;
+    imatrix_t<T> tmp_matrix {other};
+    *data_ = std::move(*tmp_matrix.data_);
     row_size_ = tmp_matrix.row_size_;
     column_size_ = tmp_matrix.column_size_;
+
+    return *this;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ template<typename T>
 int imatrix_t<T>::operator==(const imatrix_t<T>& other) const {
     if (row_size_ == other.row_size_ && column_size_ == other.  column_size_) {
         for (int i = 0; i < row_size_ * column_size_; i++) {
-            if (data_[i] != other.data_[i]) {
+            if (data_->raw_data_[i] != other.data_->raw_data_[i]) {
                 return 0;
             }
         }
@@ -116,7 +116,7 @@ template<typename T>
 int imatrix_t<T>::operator!=(const imatrix_t<T>& other) const {
     if (row_size_ == other.row_size_ && column_size_ == other.column_size_) {
         for (int i = 0; i < row_size_ * column_size_; i++) {
-            if (data_[i] != other.data_[i]) {
+            if (data_->raw_data_[i][i] != other.data_->raw_data_[i]) {
                 return 1;
             }
         }

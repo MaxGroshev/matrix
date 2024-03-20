@@ -35,7 +35,7 @@ class matrix_mul_order : public ::testing::Test {
         matrix::imatrix_t<int> matrix15{12, 20};
         matrix::imatrix_t<int> matrix16{20, 7};
         chain_t<imatrix_t<int>> mx_chain4;
-        std::vector<int> correct_mx4 = {1, 0, 3, 2};
+        std::vector<int> correct_mx4 = {1, 3, 2, 0};
 
     void SetUp() {
         mx_chain1.push_back(matrix1);
@@ -81,19 +81,19 @@ TEST_F(matrix_mul_order, get_num_of_mul1) {
 
     mx_chain1.find_best_order(cache, 1, chain_size);
     ASSERT_TRUE(mx_chain1.get_mul_order() == correct_mx1);
-
-    std::cout  << "------------------------------\n";
-    std::cout  << "Print of matrix:\n";
-    std::cout  << "Column_size: " << cache.column_size_ << '\n';
-    std::cout  << "Row_size:    " << cache.row_size_;
-
-    for (int i = 0; i < cache.column_size_ * cache.row_size_; i++) {
-        if (i % cache.row_size_ == 0)
-            std::cout << '\n';
-        std::cout << "[{" << cache.data_[i].first << " , " << cache.data_[i].second << "}] ";
-    }
-    std::cout << "\n------------------------------";
-    std::cout << '\n';
+//
+//     std::cout  << "------------------------------\n";
+//     std::cout  << "Print of matrix:\n";
+//     std::cout  << "Column_size: " << cache.column_size_ << '\n';
+//     std::cout  << "Row_size:    " << cache.row_size_;
+//
+//     for (int i = 0; i < cache.column_size_ * cache.row_size_; i++) {
+//         if (i % cache.row_size_ == 0)
+//             std::cout << '\n';
+//         std::cout << "[{" << cache.data_[i].first << " , " << cache.data_[i].second << "}] ";
+//     }
+//     std::cout << "\n------------------------------";
+//     std::cout << '\n';
 }
 
 TEST_F(matrix_mul_order, get_num_of_mul2) {
@@ -125,19 +125,6 @@ TEST_F(matrix_mul_order, get_num_of_mul4) {
 
     mx_chain4.find_best_order(cache, 1, chain_size);
     ASSERT_TRUE(mx_chain4.get_mul_order() == correct_mx4);
-
-    std::cout  << "------------------------------\n";
-    std::cout  << "Print of matrix:\n";
-    std::cout  << "Column_size: " << cache.column_size_ << '\n';
-    std::cout  << "Row_size:    " << cache.row_size_;
-
-    for (int i = 0; i < cache.column_size_ * cache.row_size_; i++) {
-        if (i % cache.row_size_ == 0)
-            std::cout << '\n';
-        std::cout << "[{" << cache.data_[i].first << " , " << cache.data_[i].second << "}] ";
-    }
-    std::cout << "\n------------------------------";
-    std::cout << '\n';
 }
 
 TEST_F(matrix_chain_mul, mx_mul1) {

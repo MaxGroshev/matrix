@@ -12,12 +12,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #-----------------------------------------------------------------------------------------
 
-# set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "Debug")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS  -g)
+    set(CMAKE_CXX_FLAGS  -fsanitize=address,leak)
     add_compile_definitions(MY_DEBUG)
-    message("Debug_version")
 endif ()
 
 #-----------------------------------------------------------------------------------------
@@ -25,9 +24,9 @@ endif ()
 add_subdirectory(debug_utils/)
 add_subdirectory(matrix/)
 
-if (TESTING_ENABLED)
+# if (TESTING_ENABLED)
     add_subdirectory(./tests/)
-endif()
+# endif()
 
 unset(TESTING_ENABLED CACHE)
 

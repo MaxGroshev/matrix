@@ -6,8 +6,9 @@
 #include "debug_utils.hpp"
 #include "time_control.hpp"
 #include "matrix_oper.hpp"
-#include "matrix.hpp"
 #include "matrix_chain.hpp"
+#include "matrix_chain.hpp"
+#include "lazy_matrix.hpp"
 
 //-----------------------------------------------------------------------------------------
 
