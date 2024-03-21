@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cassert>
 
 //-----------------------------------------------------------------------------------------
 
@@ -17,20 +18,22 @@ class matrix_buf_t {
                 ref_cnt_(1),
                 raw_data_((capacity != 0) ?
                             static_cast<T*>(::operator new(sizeof(T) * capacity)) : nullptr)
-            {};
+            {        std::clog << "I am creating buffer\n" << capacity_<< std::endl;};
             data_impl_t(const data_impl_t& rhs) = delete;
             data_impl_t& operator=(const data_impl_t& rhs) = delete;
             data_impl_t(data_impl_t&& rhs) noexcept : raw_data_(rhs.raw_data_),
                                                       capacity_(rhs.capacity_) {
                 rhs.raw_data_ = nullptr;
-                        // std::cout << "I am here\n";
+                        std::cout << "I am here\n";
 
                 rhs.capacity_ = 0;
             }
-            data_impl_t& operator=(data_impl_t&& rhs) {
+            data_impl_t& operator=(data_impl_t&& rhs) noexcept {
                 if (this == &rhs)
                     return *this;
 
+                std::clog << "Moving\n" << std::endl;
+                raw_data_ = rhs.raw_data_;
                 std::swap(raw_data_, rhs.raw_data_);
                 std::swap(capacity_, rhs.capacity_);
                 std::swap(ref_cnt_, rhs.ref_cnt_);
@@ -57,21 +60,24 @@ class matrix_buf_t {
             if (data_) return data_->capacity_;
             return 0;
         }
-        matrix_buf_t(int capacity) : data_(new data_impl_t(capacity)){};
+        matrix_buf_t(int capacity) : data_((capacity != 0) ? new data_impl_t(capacity) : nullptr){
+            std::cout << capacity << std::endl;
+        };
         matrix_buf_t(const matrix_buf_t<T>& rhs) = delete;
         matrix_buf_t& operator=(const matrix_buf_t<T>& rhs) = delete;
-        matrix_buf_t(matrix_buf_t<T>&& rhs) noexcept : data_(std::move(rhs.data_)){
-            rhs.data_ = nullptr;
+        matrix_buf_t(matrix_buf_t<T>&& rhs) noexcept {
+            std::clog << "Going to move\n" << std::endl;
+            std::swap(data_, rhs.data_);
         };
         matrix_buf_t& operator=(matrix_buf_t<T>&& rhs) {
             if (this == &rhs)
                 return *this;
-            std::cout << "Going to move\n" << std::endl;
-            data_ = std::move(rhs.data_);
-            rhs.data_ = nullptr;
+            std::clog << "Going to move from assign\n" << std::endl;
+            std::swap(data_, rhs.data_);
             return *this;
         }
         ~matrix_buf_t() {
+            std::cout << "Destructor:" << this << std::endl;
             if (data_)
                 data_->~data_impl_t();
             ::operator delete(data_);

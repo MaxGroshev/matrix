@@ -49,7 +49,7 @@ class imatrix_t : private matrix_buf_t<T> {
                                            matrix_buf_t<T>(other.get_capacity()) {
 
         new (data_->raw_data_) T [other.get_capacity()];
-        std::clog << "I am copying\n" << std::endl;
+        std::clog << "I am copying matrix:" << &other << std::endl;
         for (int i = 0; i < other.get_capacity(); i++) {
             data_->raw_data_[i] = other.data_->raw_data_[i];
         }
@@ -117,11 +117,14 @@ typename imatrix_t<T>::proxy_row_t imatrix_t<T>::operator[](const int pos) {
 
 template<typename T>
 const typename imatrix_t<T>::proxy_row_t imatrix_t<T>::operator[](const int pos) const {
+    std::cout << "Mx start br" << std::endl;
+    assert(data_); //data is nullptr
     if (pos < 0 || pos > column_size_) {
         std::cerr << "Elem is out of row";
         return (*this)[0];
     }
     proxy_row_t ret_row {data_->raw_data_ + (pos * row_size_), row_size_};
+    std::cout << "Mx end br" << std::endl;
     return ret_row;
 }
 
@@ -137,7 +140,8 @@ imatrix_t<T>& imatrix_t<T>::transpose() & {
             tmp_m[j][i] = m[i][j];
         }
     }
-    *data_       = std::move(*tmp_m.data_);
+    std::cout << "Trans \n";
+    std::swap(data_, tmp_m.data_);
     // tmp_m.data_ = nullptr;
     row_size_   = tmp_m.row_size_;
     column_size_= tmp_m.column_size_;
@@ -149,6 +153,7 @@ imatrix_t<T> imatrix_t<T>::transpose() const & {
     const imatrix_t<T>& m = *this;
     imatrix_t ret_matrix{row_size_, column_size_};
 
+    std::cout << "Trans const \n";
     for (int i = 0; i < column_size_; i++) {
         for (int j = 0; j < row_size_; j++) {
             ret_matrix[j][i] = m[i][j];
@@ -206,7 +211,7 @@ T imatrix_t<T>::find_det() const { //Barreis algorithm
         for (int k = i + 1; k < matrix.row_size_; k++) {
             for (int m = i + 1; m < matrix.row_size_; m++) {
                 matrix[k][m] = matrix[k][m] * matrix[i][i] -
-                                     matrix[k][i] * matrix[i][m];
+                               matrix[k][i] * matrix[i][m];
                 if (i != 0) {
                     matrix[k][m] /= matrix[i - 1][i - 1];
                 }

@@ -36,8 +36,9 @@ TEST_F(matrix_big_five, copy_constructor) {
 
 TEST_F(matrix_big_five, copy_assignment) {
 
+    std::cout << "Inited test\n";
     matrix::sq_matrix_t<int> matrix2{matrix_data1, 3};
-    // matrix::sq_matrix_t<int> copy_matrix = matrix2;
+    std::cout << "Inited mx\n";
 
     matrix2 = matrix1;
     std::clog << "End of copy\n" << std::endl;

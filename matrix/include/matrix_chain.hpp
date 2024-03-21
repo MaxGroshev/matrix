@@ -86,15 +86,12 @@ template<typename T>
 void chain_t<T>::find_mul_order() {
     int chain_size = mx_sizes.size();
     imatrix_t<std::pair<int, int>> cache {chain_size, chain_size, {-1, -1}};
-        std::cout << "I am here\n" << cache[2][2].first << std::endl;
     get_num_of_mul(cache, 1, chain_size);
     find_best_order(cache, 1, chain_size - 1);
 }
 
 template<typename T>
 int chain_t<T>::get_num_of_mul(imatrix_t<std::pair<int, int>>& cache, int i, int j) const {
-            // std::cout << "I am here\n" << cache[2][2].first << std::endl;
-
     if (i == j)
         return 0;
     if (cache[i][j].first != -1) {
