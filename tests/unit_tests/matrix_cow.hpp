@@ -24,7 +24,7 @@ TEST_F(matrix_cow, copy_constructor) {
     matrix::lazy_matrix_t<int> copy_matrix{matrix1};
 
     ASSERT_TRUE(matrix1.row_size_ == copy_matrix.row_size_);
-    ASSERT_TRUE(matrix1.data_->raw_data_ == copy_matrix.data_->raw_data_);
+    ASSERT_TRUE(matrix1.data_->data_() == copy_matrix.data_->data_());
 
 
     ASSERT_TRUE(matrix1[0][0] == copy_matrix[0][0]);
@@ -47,7 +47,7 @@ TEST_F(matrix_cow, copy_assignment) {
     copy_matrix = matrix1;
 
     ASSERT_TRUE(matrix1.row_size_ == copy_matrix.row_size_);
-    ASSERT_TRUE(matrix1.data_->raw_data_ == copy_matrix.data_->raw_data_);
+    ASSERT_TRUE(matrix1.data_->data_() == copy_matrix.data_->data_());
 
     ASSERT_TRUE(matrix1[0][0] == copy_matrix[0][0]);
     ASSERT_TRUE(matrix1[0][1] == copy_matrix[0][1]);
@@ -67,11 +67,11 @@ TEST_F(matrix_cow, complicated_copy_assignment) {
     matrix::lazy_matrix_t<int> copy_matrix{matrix2};
 
     matrix1 = matrix2;
-    ASSERT_TRUE(matrix1.data_->raw_data_ == matrix2.data_->raw_data_);
+    ASSERT_TRUE(matrix1.data_->data_() == matrix2.data_->data_());
 
     matrix2 = matrix3;
-    ASSERT_TRUE(matrix2.data_->raw_data_ == matrix3.data_->raw_data_);
-    ASSERT_TRUE(matrix1.data_->raw_data_ != matrix2.data_->raw_data_);
+    ASSERT_TRUE(matrix2.data_->data_() == matrix3.data_->data_());
+    ASSERT_TRUE(matrix1.data_->data_() != matrix2.data_->data_());
 
 
     ASSERT_TRUE(matrix1[0][0] == copy_matrix[0][0]);
@@ -97,3 +97,5 @@ TEST_F(matrix_cow, complicated_copy_assignment) {
     ASSERT_TRUE(matrix2[2][1] == matrix3[2][1]);
     ASSERT_TRUE(matrix2[2][2] == matrix3[2][2]);
 }
+
+

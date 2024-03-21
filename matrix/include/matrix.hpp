@@ -26,9 +26,9 @@ class imatrix_t : private matrix_buf_t<T> {
         row_size_(row_size), column_size_(column_size),
         matrix_buf_t<T>(row_size * column_size) {
 
-        new (data_->raw_data_) T [row_size * column_size];
+        new (data_->data_()) T [row_size * column_size];
         for (int i = 0; i < row_size * column_size; i++) {
-            data_->raw_data_[i] = data[i];
+            data_->data_()[i] = data[i];
         }
     }
 
@@ -42,7 +42,7 @@ class imatrix_t : private matrix_buf_t<T> {
         column_size_(column_size),
         matrix_buf_t<T> (row_size * column_size) {
         for (int i = 0; i < column_size * row_size; i++) {
-            data_->raw_data_[i] = val;
+            data_->data_()[i] = val;
         }
         // std::fill(data_, row_size * column_size * sizeof(T) , val);
     };
@@ -51,10 +51,10 @@ class imatrix_t : private matrix_buf_t<T> {
                                            column_size_(other.column_size_),
                                            matrix_buf_t<T>(other.get_capacity()) {
 
-        new (data_->raw_data_) T [other.get_capacity()];
+        new (data_->data_()) T [other.get_capacity()];
         std::clog << "I am copying matrix:" << &other << std::endl;
         for (int i = 0; i < other.get_capacity(); i++) {
-            data_->raw_data_[i] = other.data_->raw_data_[i];
+            data_->data_()[i] = other.data_->data_()[i];
         }
     };
     imatrix_t(imatrix_t<T>&& other) = default;
@@ -114,7 +114,7 @@ typename imatrix_t<T>::proxy_row_t imatrix_t<T>::operator[](const int pos) {
         std::cerr << "Elem is out of row";
         return (*this)[0];
     }
-    proxy_row_t ret_row {data_->raw_data_ + (pos * row_size_), row_size_};
+    proxy_row_t ret_row {data_->data_() + (pos * row_size_), row_size_};
     return ret_row;        //make func for rt of raw
 }
 
@@ -124,7 +124,7 @@ const typename imatrix_t<T>::proxy_row_t imatrix_t<T>::operator[](const int pos)
         std::cerr << "Elem is out of row";
         return (*this)[0];
     }
-    proxy_row_t ret_row {data_->raw_data_ + (pos * row_size_), row_size_};
+    proxy_row_t ret_row {data_->data_() + (pos * row_size_), row_size_};
     return ret_row;
 }
 
@@ -174,9 +174,9 @@ imatrix_t<T>& imatrix_t<T>::negate() & { //for square matrix
 template<typename T>
 void imatrix_t<T>::swap_rows(const int lhs, const int rhs) {
     for (int i = 0; i < row_size_; i++) {
-        T tmp = data_->raw_data_[i + lhs * row_size_];
-        data_->raw_data_[i + lhs * row_size_] = data_->raw_data_[i + rhs * row_size_];
-        data_->raw_data_[i + rhs * row_size_] = tmp;
+        T tmp = data_->data_()[i + lhs * row_size_];
+        data_->data_()[i + lhs * row_size_] = data_->data_()[i + rhs * row_size_];
+        data_->data_()[i + rhs * row_size_] = tmp;
     }
 }
 
@@ -232,7 +232,7 @@ void imatrix_t<T>::print(std::ostream & out_strm) const {
     for (int i = 0; i < column_size_ * row_size_; i++) {
         if (i % row_size_ == 0)
             std::cout << '\n';
-        std::cout << "[" << data_->raw_data_[i] << "] ";
+        std::cout << "[" << data_->data_()[i] << "] ";
     }
     out_strm << "\n------------------------------";
     std::cout << '\n';

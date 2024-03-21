@@ -20,10 +20,11 @@ class lazy_matrix_t : public imatrix_t<T> {
             row_size_ = other.row_size_;
             column_size_ = other.column_size_;
             this->data_ = other.data_;
-            this->data_->retain_mem_object(); //rsp
+            this->data_->retain_mem_object(); //srp
 
         }
         lazy_matrix_t<T>& operator=(const lazy_matrix_t<T>& other);
+        lazy_matrix_t<T>& operator=(const imatrix_t<T>& other);
 };
 
 template<typename T>
@@ -32,19 +33,31 @@ lazy_matrix_t<T>& lazy_matrix_t<T>::operator=(const lazy_matrix_t<T>& other) {
         return *this;
     }
 
+    std::cout << "Here lazy \n";
     imatrix_t<T> tmp_matrix {};
     std::swap(data_, tmp_matrix.data_);
     row_size_ = other.row_size_;
     column_size_ = other.column_size_;
     this->data_ = other.data_;
-    this->data_->retain_mem_object(); //rsp
+    this->data_->retain_mem_object(); //srp
 
     return *this;
 }
 
-// template<typename T>
-// lazy_matrix_t<T>& lazy_matrix_t<T>::operator=(const lazy_matrix_t<T>& other) {
-//     matrix_buf_t<T>::mx_retain(other.data);
-// }
+template<typename T>
+lazy_matrix_t<T>& lazy_matrix_t<T>::operator=(const imatrix_t<T>& other) {
+    if (this == &other) {
+        return *this;
+    }
 
+    std::cout << "Here imatrix\n";
+    imatrix_t<T> tmp_matrix {};
+    std::swap(data_, tmp_matrix.data_);
+    row_size_ = other.row_size_;
+    column_size_ = other.column_size_;
+    this->data_ = other.data_;
+    this->data_->retain_mem_object(); //srp
+
+    return *this;
+}
 }

@@ -103,7 +103,7 @@ template<typename T>
 int imatrix_t<T>::operator==(const imatrix_t<T>& other) const {
     if (row_size_ == other.row_size_ && column_size_ == other.  column_size_) {
         for (int i = 0; i < row_size_ * column_size_; i++) {
-            if (data_->raw_data_[i] != other.data_->raw_data_[i]) {
+            if (data_->data_()[i] != other.data_->data_()[i]) {
                 return 0;
             }
         }
@@ -117,7 +117,7 @@ template<typename T>
 int imatrix_t<T>::operator!=(const imatrix_t<T>& other) const {
     if (row_size_ == other.row_size_ && column_size_ == other.column_size_) {
         for (int i = 0; i < row_size_ * column_size_; i++) {
-            if (data_->raw_data_[i][i] != other.data_->raw_data_[i]) {
+            if (data_->data_()[i] != other.data_->data_()[i]) {
                 return 1;
             }
         }

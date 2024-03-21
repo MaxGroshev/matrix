@@ -17,5 +17,6 @@
 #include "matrix_big_five_test.hpp"
 #include "matrixes_chain_test.hpp"
 #include "matrix_cow.hpp"
+#include "cow_matrix_op_test.hpp"
 
 //-----------------------------------------------------------------------------------------
