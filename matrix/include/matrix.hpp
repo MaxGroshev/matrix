@@ -14,10 +14,13 @@ template<typename T>
 class imatrix_t : private matrix_buf_t<T> {
     private:
         class proxy_row_t;
+
     public:
         using matrix_buf_t<T>::data_;
-        int row_size_; //num of elems in row
-        int column_size_;
+        int row_size_   = 0; //num of elems in row
+        int column_size_ = 0;
+
+    imatrix_t() : matrix_buf_t<T>(0) {};
 
     imatrix_t(std::vector<T>& data, int column_size, int row_size) :
         row_size_(row_size), column_size_(column_size),
@@ -37,7 +40,7 @@ class imatrix_t : private matrix_buf_t<T> {
     imatrix_t(int column_size, int row_size, T val) :
         row_size_(row_size),
         column_size_(column_size),
-        matrix_buf_t<T>(row_size * column_size) {
+        matrix_buf_t<T> (row_size * column_size) {
         for (int i = 0; i < column_size * row_size; i++) {
             data_->raw_data_[i] = val;
         }

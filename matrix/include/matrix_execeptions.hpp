@@ -15,7 +15,7 @@ class mx_exception : public std::runtime_error {
             switch(err) {
                 case(MX_ERR::WRONG_SIZES):
                     std::runtime_error("Different size of matrixes\n");
-                    std::cout << -1;
+                    std::cerr << -1;
                     break;
             }
         };
