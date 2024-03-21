@@ -117,14 +117,11 @@ typename imatrix_t<T>::proxy_row_t imatrix_t<T>::operator[](const int pos) {
 
 template<typename T>
 const typename imatrix_t<T>::proxy_row_t imatrix_t<T>::operator[](const int pos) const {
-    std::cout << "Mx start br" << std::endl;
-    assert(data_); //data is nullptr
     if (pos < 0 || pos > column_size_) {
         std::cerr << "Elem is out of row";
         return (*this)[0];
     }
     proxy_row_t ret_row {data_->raw_data_ + (pos * row_size_), row_size_};
-    std::cout << "Mx end br" << std::endl;
     return ret_row;
 }
 
@@ -140,9 +137,7 @@ imatrix_t<T>& imatrix_t<T>::transpose() & {
             tmp_m[j][i] = m[i][j];
         }
     }
-    std::cout << "Trans \n";
     std::swap(data_, tmp_m.data_);
-    // tmp_m.data_ = nullptr;
     row_size_   = tmp_m.row_size_;
     column_size_= tmp_m.column_size_;
     return *this;
@@ -153,7 +148,6 @@ imatrix_t<T> imatrix_t<T>::transpose() const & {
     const imatrix_t<T>& m = *this;
     imatrix_t ret_matrix{row_size_, column_size_};
 
-    std::cout << "Trans const \n";
     for (int i = 0; i < column_size_; i++) {
         for (int j = 0; j < row_size_; j++) {
             ret_matrix[j][i] = m[i][j];

@@ -88,7 +88,7 @@ imatrix_t<T>& imatrix_t<T>::operator=(const imatrix_t<T>& other) {
         return *this;
     }
 
-    std::cout << "Copy Assign matrix" << std::endl;
+    std::clog << "Copy Assign matrix" << std::endl;
     imatrix_t<T> tmp_matrix {other};
     std::swap(data_, tmp_matrix.data_);
     row_size_ = tmp_matrix.row_size_;

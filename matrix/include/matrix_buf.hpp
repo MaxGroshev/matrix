@@ -24,7 +24,7 @@ class matrix_buf_t {
             data_impl_t(data_impl_t&& rhs) noexcept : raw_data_(rhs.raw_data_),
                                                       capacity_(rhs.capacity_) {
                 rhs.raw_data_ = nullptr;
-                        std::cout << "I am here\n";
+                        std::clog << "I am here\n";
 
                 rhs.capacity_ = 0;
             }
@@ -38,13 +38,13 @@ class matrix_buf_t {
                 std::swap(capacity_, rhs.capacity_);
                 std::swap(ref_cnt_, rhs.ref_cnt_);
                 // rhs.raw_data_   = nullptr;
-                // std::cout << "Moving\n\n";
+                // std::clog << "Moving\n\n";
 
                 return *this;
             }
             ~data_impl_t() {
 
-                // std::cout << "I am cleaning: " << capacity_ << std::endl;
+                // std::clog << "I am cleaning: " << capacity_ << std::endl;
                 destroy();
                 ::operator delete(raw_data_);
             }
@@ -61,7 +61,7 @@ class matrix_buf_t {
             return 0;
         }
         matrix_buf_t(int capacity) : data_((capacity != 0) ? new data_impl_t(capacity) : nullptr){
-            std::cout << capacity << std::endl;
+            std::clog << capacity << std::endl;
         };
         matrix_buf_t(const matrix_buf_t<T>& rhs) = delete;
         matrix_buf_t& operator=(const matrix_buf_t<T>& rhs) = delete;
@@ -77,7 +77,7 @@ class matrix_buf_t {
             return *this;
         }
         ~matrix_buf_t() {
-            std::cout << "Destructor:" << this << std::endl;
+            std::clog << "Destructor:" << this << std::endl;
             if (data_)
                 data_->~data_impl_t();
             ::operator delete(data_);
