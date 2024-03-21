@@ -74,7 +74,6 @@ TEST_F(matrix_cow, complicated_copy_assignment) {
     ASSERT_TRUE(matrix1.data_->raw_data_ != matrix2.data_->raw_data_);
 
 
-
     ASSERT_TRUE(matrix1[0][0] == copy_matrix[0][0]);
     ASSERT_TRUE(matrix1[0][1] == copy_matrix[0][1]);
     ASSERT_TRUE(matrix1[0][2] == copy_matrix[0][2]);
@@ -86,4 +85,15 @@ TEST_F(matrix_cow, complicated_copy_assignment) {
     ASSERT_TRUE(matrix1[2][0] == copy_matrix[2][0]);
     ASSERT_TRUE(matrix1[2][1] == copy_matrix[2][1]);
     ASSERT_TRUE(matrix1[2][2] == copy_matrix[2][2]);
+
+
+    ASSERT_TRUE(matrix2[0][0] == matrix3[0][0]);
+    ASSERT_TRUE(matrix2[0][1] == matrix3[0][1]);
+    ASSERT_TRUE(matrix2[0][2] == matrix3[0][2]);
+    ASSERT_TRUE(matrix2[1][0] == matrix3[1][0]);
+    ASSERT_TRUE(matrix2[1][1] == matrix3[1][1]);
+    ASSERT_TRUE(matrix2[1][2] == matrix3[1][2]);
+    ASSERT_TRUE(matrix2[2][0] == matrix3[2][0]);
+    ASSERT_TRUE(matrix2[2][1] == matrix3[2][1]);
+    ASSERT_TRUE(matrix2[2][2] == matrix3[2][2]);
 }

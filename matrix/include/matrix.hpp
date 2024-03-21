@@ -20,7 +20,7 @@ class imatrix_t : private matrix_buf_t<T> {
         int row_size_   = 0; //num of elems in row
         int column_size_ = 0;
 
-    imatrix_t() : matrix_buf_t<T>(0) {};
+    imatrix_t() : matrix_buf_t<T>() {};
 
     imatrix_t(std::vector<T>& data, int column_size, int row_size) :
         row_size_(row_size), column_size_(column_size),

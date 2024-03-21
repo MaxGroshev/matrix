@@ -21,18 +21,10 @@ class matrix_buf_t {
                 raw_data_((capacity != 0) ?
                             static_cast<T*>(::operator new(sizeof(T) * capacity)) : nullptr)
             {};
-            data_impl_t(const data_impl_t& rhs) {
-                raw_data_ = rhs.raw_data_;
-                retain_mem_object();
-                std::cout << "Retain: " << ref_cnt_ << std::endl;
-            }
-            data_impl_t& operator=(const data_impl_t& rhs) {
-                raw_data_ = rhs.raw_data_;
-                retain_mem_object();
-                std::cout << "Retain: " << ref_cnt_ << std::endl;
-                return *this;
 
-            }
+            data_impl_t(const data_impl_t& rhs) = delete;
+            data_impl_t& operator=(const data_impl_t& rhs) = delete;
+
             data_impl_t(data_impl_t&& rhs) noexcept : raw_data_(rhs.raw_data_),
                                                       capacity_(rhs.capacity_) {
                 rhs.raw_data_ = nullptr;
@@ -51,11 +43,9 @@ class matrix_buf_t {
             }
             ~data_impl_t() {
                 std::clog << "Destructor:" << this << "   " << capacity_ << std::endl;
-                if (ref_cnt_ == 1) {
-                    destroy();
-                    ::operator delete(raw_data_);
-                }
                 ref_cnt_--;
+                destroy();
+                ::operator delete(raw_data_);
             }
             void destroy() {
                 for (int i = 0; i < capacity_; i++) {
@@ -73,11 +63,23 @@ class matrix_buf_t {
             if (data_) return data_->capacity_;
             return 0;
         }
+        matrix_buf_t() : data_(nullptr){};
         matrix_buf_t(int capacity) : data_(new data_impl_t(capacity)){
             std::clog << capacity << std::endl;
         };
-        matrix_buf_t(const matrix_buf_t<T>& rhs) = delete;
-        matrix_buf_t& operator=(const matrix_buf_t<T>& rhs) = delete;
+        matrix_buf_t(const matrix_buf_t<T>& rhs) {
+            if (data_) {
+                data_->retain_mem_object();
+                std::cout << data_->ref_cnt_ << std::endl;
+            }
+        }
+        matrix_buf_t& operator=(const matrix_buf_t<T>& rhs) {
+            if (data_) {
+                data_->retain_mem_object();
+                std::cout << data_->ref_cnt_ << std::endl;
+            }
+            return *this;
+        }
         matrix_buf_t(matrix_buf_t<T>&& rhs) noexcept {
             std::clog << "Going to move\n" << std::endl;
             std::swap(data_, rhs.data_);
@@ -90,9 +92,13 @@ class matrix_buf_t {
             return *this;
         }
         ~matrix_buf_t() {
-            // std::clog << "Destructor:" << this << std::endl;
-            if (data_)
+            std::clog << "Destructor:" << this << std::endl;
+            if (data_ && (data_->get_ref_cnt() == 1)) {
                 data_->~data_impl_t();
-            ::operator delete(data_);
+                ::operator delete(data_);
+            }
+            else if (data_) {
+                data_->release_mem_object();
+            }
         }
 };

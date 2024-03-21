@@ -12,10 +12,10 @@
 #include "debug_utils.hpp"
 #include "lazy_matrix.hpp"
 
-// #include "matrix_op_test.hpp"
-// #include "matrix_meth_test.hpp"
-// #include "matrix_big_five_test.hpp"
-// #include "matrixes_chain_test.hpp"
+#include "matrix_op_test.hpp"
+#include "matrix_meth_test.hpp"
+#include "matrix_big_five_test.hpp"
+#include "matrixes_chain_test.hpp"
 #include "matrix_cow.hpp"
 
 //-----------------------------------------------------------------------------------------
