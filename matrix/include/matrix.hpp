@@ -52,7 +52,7 @@ class imatrix_t : private matrix_buf_t<T> {
                                            matrix_buf_t<T>(other.get_capacity()) {
 
         new (data_->data_()) T [other.get_capacity()];
-        std::clog << "I am copying matrix:" << &other << std::endl;
+        std::clog << "Default matrix copy:" << std::endl;
         for (int i = 0; i < other.get_capacity(); i++) {
             data_->data_()[i] = other.data_->data_()[i];
         }
@@ -72,6 +72,7 @@ class imatrix_t : private matrix_buf_t<T> {
     imatrix_t  transpose() const &;
     imatrix_t& negate   () &;
     T          find_det () const;
+    imatrix_t  raise_to_power(int power) const;
     void       swap_rows(const int lhs, const int rhs);
     void       print(std::ostream & out_strm = std::cout) const;
 
@@ -217,6 +218,43 @@ T imatrix_t<T>::find_det() const { //Barreis algorithm
     }
 
     return det_sign * matrix[matrix.row_size_ - 1][matrix.row_size_ - 1];
+}
+
+//-----------------------------------------------------------------------------------------
+
+template<typename T>
+imatrix_t<T> imatrix_t<T>::raise_to_power(int power) const {
+    if (power <= 1)
+        return imatrix_t<T> {*this};
+
+    const imatrix_t<T>& m = *this;
+    std::vector<imatrix_t<T>> buf_of_mx {};
+    buf_of_mx.push_back(m);
+
+    buf_of_mx.push_back(m * m);
+    imatrix_t ret_matrix{m * m};
+
+    for (int i = 2; i < power;) {
+        if (i + i <= power) {
+            ret_matrix = buf_of_mx.back() * buf_of_mx.back();
+            std::clog << "-------Before push\n";
+            buf_of_mx.push_back(ret_matrix);
+            std::clog << "-------After push\n";
+            i += i;
+        }
+        else {
+            int j = 1;
+            int cnt = 0;
+            do {
+                j *= 2;
+                cnt++;
+            } while (j + i < power);
+
+            ret_matrix = ret_matrix * buf_of_mx[cnt - 1];
+            i += cnt;
+        }
+    }
+    return ret_matrix;
 }
 
 //-----------------------------------------------------------------------------------------

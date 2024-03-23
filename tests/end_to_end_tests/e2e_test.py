@@ -142,6 +142,6 @@ def run_test_data(name_of_testing_prog, test_dat):
 # -----------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    run_test_data("./build/matrix/mx_order", test_chain_data)
-    # run_test_data("./build/matrix/mx_mul", test_mul_data)
+    run_test_data("./matrix/mx_order", test_chain_data)
+    # run_test_data("./matrix/mx_mul", test_mul_data)
 

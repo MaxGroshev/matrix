@@ -18,7 +18,10 @@ int main() {
         std::cout << std::endl;
     } catch (mx_exception& err) {
         std::cerr << err.what();
+    } catch (const char* err) {
+        std::cerr << err;
     }
+
 
     return 0;
 }

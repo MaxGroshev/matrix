@@ -50,6 +50,22 @@ std::vector<T> order_get_user_data(std::istream & in_strm) {
     return data;
 }
 
+//-----------------------------------------------------------------------------------------
+
+template <typename T>
+std::pair<matrix::imatrix_t<T>, int>power_get_user_data(std::istream & in_strm = std::cin) {
+    using namespace matrix;
+    in_strm.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+    int power = 0;
+    int n_col = 0;
+    int n_row = 0;
+    in_strm >> power >> n_col >> n_row;
+
+    imatrix_t<T> mx = get_matrix<T>(n_col, n_row, in_strm);
+
+    return std::pair {std::move(mx), power};
+}
 
 //-----------------------------------------------------------------------------------------
 
@@ -81,7 +97,7 @@ matrix::chain_t<matrix::imatrix_t<T>>mul_get_user_data(std::istream & in_strm = 
 template <typename T>
 matrix::imatrix_t<T> get_matrix(int i, int j, std::istream & in_strm) {
 
-    int elem = 0;
+    T elem = 0;
     std::vector<T> elems;
     for (int k = 0; k < i * j; k++) {
         in_strm >> elem;
