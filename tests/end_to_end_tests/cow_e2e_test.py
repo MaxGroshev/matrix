@@ -138,23 +138,23 @@ def run_test_data(tested_prog_name):
     n_test      = 0
     failed = []
 
-    print('————————————————————————START OF TESTS———————————————————————')
 
     for (n_test, file_name, ans_file_name) in zip(range(len(data_files_names)), data_files_names, ans_files_names):
         # data = get_data(file_name)
 
         ans = get_data(ans_file_name)
-        if (ans == "DO NOT RUN"):
+        # print(ans_file_name)
+        if (ans.find("DO NOT RUN") != -1):
             continue
 
+        print('————————————————————————START OF TEST———————————————————————')
         prog_output = run_test(tested_prog_name, file_name)
         prog_output = "\n".join([s for s in prog_output.split("\n") if s])
         if (check_output_data(n_test, prog_output, ans, tested_prog_name, file_name)):
             passed_test += 1
         else:
             failed.append(file_name)
-
-    print('————————————————————————END OF TESTS—————————————————————————\n\n')
+        print('————————————————————————END OF TEST—————————————————————————\n\n')
     show_total_test_stat(n_test, passed_test, failed)
 
 

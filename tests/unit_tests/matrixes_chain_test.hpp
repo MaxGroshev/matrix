@@ -136,7 +136,7 @@ TEST_F(matrix_chain_mul, mx_mul1) {
     mx_chain.push_back(matrix4);
 
     matrix::imatrix_t<int> res_matrix = mx_chain.mul();
-    res_matrix.print();
+    // res_matrix.print();
     ASSERT_TRUE(res_matrix[0][0] == 576);
     ASSERT_TRUE(res_matrix[0][1] == 576);
     ASSERT_TRUE(res_matrix[0][2] == 576);

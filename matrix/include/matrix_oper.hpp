@@ -82,13 +82,47 @@ imatrix_t<T> operator*(const T val, const imatrix_t<T>& rhs) {
 
 //-----------------------------------------------------------------------------------------
 
+template<typename mx>
+mx raise_to_power(const mx& m, int power) {
+    if (power <= 1)
+        return mx {m};
+
+    std::vector<mx> buf_of_mx {};
+    buf_of_mx.push_back(m);
+
+    buf_of_mx.push_back(m * m);
+    mx ret_matrix{m * m};
+
+    for (int i = 2; i < power;) {
+        if (i + i <= power) {
+            ret_matrix = buf_of_mx.back() * buf_of_mx.back();
+            buf_of_mx.push_back(ret_matrix);
+            i += i;
+        }
+        else {
+            int j = 1;
+            int cnt = 0;
+            do {
+                j *= 2;
+                cnt++;
+            } while (j + i < power);
+
+            ret_matrix = ret_matrix * buf_of_mx [cnt - 1];
+            i += cnt;
+        }
+    }
+    return ret_matrix;
+}
+
+//-----------------------------------------------------------------------------------------
+
 template<typename T>
 imatrix_t<T>& imatrix_t<T>::operator=(const imatrix_t<T>& other) {
     if (this == &other) {
         return *this;
     }
 
-    std::clog << "Copy Assign matrix" << std::endl;
+    //std::clog << "Copy Assign matrix" << std::endl;
     imatrix_t<T> tmp_matrix {other};
     std::swap(data_, tmp_matrix.data_);
     row_size_ = tmp_matrix.row_size_;

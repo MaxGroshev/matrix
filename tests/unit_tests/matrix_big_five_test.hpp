@@ -36,12 +36,12 @@ TEST_F(matrix_big_five, copy_constructor) {
 
 TEST_F(matrix_big_five, copy_assignment) {
 
-    std::cout << "Inited test\n";
+    // std::cout << "Inited test\n";
     matrix::sq_matrix_t<int> matrix2{matrix_data1, 3};
-    std::cout << "Inited mx\n";
+    // std::cout << "Inited mx\n";
 
     matrix2 = matrix1;
-    std::clog << "End of copy\n" << std::endl;
+    // std::clog << "End of copy\n" << std::endl;
     ASSERT_TRUE(matrix1.row_size_ == matrix2.row_size_);
 
     ASSERT_TRUE(matrix1[0][0] == matrix2[0][0]);

@@ -14,8 +14,8 @@ class matrix_meth : public ::testing::Test {
         matrix::sq_matrix_t<int> matrix1{matrix_data1, 3};
         matrix::sq_matrix_t<int> matrix2{matrix_data2, 3};
         matrix::sq_matrix_t<int> matrix3{matrix_data3, 3};
-        matrix::imatrix_t<int> matrix4{matrix_data4, 2, 3};
-        matrix::imatrix_t<long> matrix5{matrix_data5, 3, 3};
+        matrix::imatrix_t<int>   matrix4{matrix_data4, 2, 3};
+        matrix::imatrix_t<long>  matrix5{matrix_data5, 3, 3};
     void SetUp() {
     }
 };
@@ -53,7 +53,7 @@ TEST_F(matrix_meth, transpose_test) {
 
 TEST_F(matrix_meth, raise_to_power_strict_test) {
 
-    auto res_matrix = matrix5.raise_to_power(3);
+    auto res_matrix = matrix::raise_to_power(matrix5, 3);
 
     ASSERT_TRUE(res_matrix[0][0] == 468);
     ASSERT_TRUE(res_matrix[0][1] == 1062);
@@ -69,7 +69,7 @@ TEST_F(matrix_meth, raise_to_power_strict_test) {
 TEST_F(matrix_meth, raise_to_power) {
 
     int power = 11;
-    auto res_matrix = matrix5.raise_to_power(power);
+    auto res_matrix = matrix::raise_to_power(matrix5, power);
     auto copy_res = matrix5;
     for (int i = 2; i <= power; i++)
         copy_res = copy_res * matrix5;;

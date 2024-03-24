@@ -33,37 +33,7 @@ class lazy_matrix_t : public imatrix_t<T> {
         lazy_matrix_t<T>& operator=(const lazy_matrix_t<T>& other);
         lazy_matrix_t<T>& operator=(const imatrix_t<T>& other);
 
-        imatrix_t<T> raise_to_power(int power) const {
-            if (power <= 1)
-                return imatrix_t<T> {*this};
-
-            const lazy_matrix_t<T>& m = *this;
-            std::vector<lazy_matrix_t<T>> buf_of_mx {};
-            buf_of_mx.push_back(m);
-
-            buf_of_mx.push_back(m * m);
-            lazy_matrix_t ret_matrix{m * m};
-
-            for (int i = 2; i < power;) {
-                if (i + i <= power) {
-                    ret_matrix = buf_of_mx.back() * buf_of_mx.back();
-                    buf_of_mx.push_back(ret_matrix);
-                    i += i;
-                }
-                else {
-                    int j = 1;
-                    int cnt = 0;
-                    do {
-                        j *= 2;
-                        cnt++;
-                    } while (j + i < power);
-
-                    ret_matrix = ret_matrix * buf_of_mx[cnt - 1];
-                    i += cnt;
-                }
-            }
-            return ret_matrix;
-        }
+        ~lazy_matrix_t() = default;
 };
 
 template<typename T>

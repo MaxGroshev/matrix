@@ -5,7 +5,12 @@ import numpy as np
 import os
 import sys
 
+# To generate test
 # -----------------------------------------------------------------------------------------
+# python3 ../tests/end_to_end_tests/mx_power_gen.py -dat=../tests/end_to_end_tests/my_cow_dat/8.dat
+#         -ans=../tests/end_to_end_tests/my_cow_ans/8.ans -p=1024 -s 10 10  -d 1 3
+# -----------------------------------------------------------------------------------------
+
 
 def print_test_data(args, test_data):
     dat_file = open(args.data, "w")
@@ -42,7 +47,6 @@ def gen_mx(args):
         matrix.append(row)
 
     return matrix
-
 
 # -----------------------------------------------------------------------------------------
 

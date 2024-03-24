@@ -72,6 +72,7 @@ TEST_F(matrix_cow, complicated_copy_assignment) {
     matrix2 = matrix3;
     ASSERT_TRUE(matrix2.data_->data_() == matrix3.data_->data_());
     ASSERT_TRUE(matrix1.data_->data_() != matrix2.data_->data_());
+    ASSERT_TRUE(matrix1.data_->data_() == copy_matrix.data_->data_());
 
 
     ASSERT_TRUE(matrix1[0][0] == copy_matrix[0][0]);
